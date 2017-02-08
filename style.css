@@ -1,0 +1,160 @@
+body {
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 10pt;
+  background-color: hsl(50, 100%, 90%);
+}
+
+hr {
+  border-top: 1px dashed hsl(50, 50%, 50%);
+  border-bottom: 0;
+}
+
+.header > * {
+  margin: 4px;
+}
+
+.header h1 {
+  margin-left: 0;
+}
+
+form {
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 1.5em;
+  display: inline;
+}
+
+a {
+  color: black;
+}
+
+table {
+  border-spacing: 1px;
+  border-collapse: separate;
+}
+
+td {
+  background-color: white;
+  cursor: pointer;
+  padding: 0;
+}
+
+.col {
+  background-color: silver;
+  height: 20px;
+}
+
+.row {
+  background-color: silver;
+}
+
+.row div {
+  width: 20px;
+}
+
+input[type=file] {
+  display: none;
+  width: 1px;
+}
+
+input[type=number] {
+  max-width: 80px
+}
+
+input, select, button, a.button {
+  margin: 2px 4px;
+}
+
+input[type=text], input[type=number], textarea {
+  border: 1px inset #e0e0e0;
+  background-color: #fff;
+  padding: 4px 8px;
+  color: black;
+}
+
+button, .button, select {
+  cursor: pointer;
+  border: 1px outset hsl(50, 50%, 70%);
+  background-color: hsl(50, 50%, 70%);
+  padding: 4px 8px;
+  color: black;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+button:hover, .button:hover, select:hover {
+  background-color: hsl(50, 50%, 80%);
+  border-color: hsl(50, 50%, 80%);
+}
+
+button:active, .button:active, select:active {
+  background-color: hsl(50, 50%, 90%);
+  border: 1px inset hsl(50, 50%, 90%);
+}
+
+button:focus, .button:focus, select:focus {
+  outline: 0;
+}
+
+button.type {
+  padding: 8px;
+}
+
+div {
+  margin: auto;
+}
+
+button.selected {
+  background-color: hsl(50, 50%, 90%);
+  border: 1px inset hsl(50, 50%, 90%);
+}
+
+.work {
+  position: relative;
+}
+
+.table {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.mask {
+  position: absolute;
+  left: 22px;
+  top: 22px;
+  width: 2000px;
+  height: 1500px;
+  pointer-events: none;
+}
+
+.person {
+  position: absolute;
+  pointer-events: none;
+}
+
+.donate {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.donate * {
+  margin: 0;
+}
+
+.vr {
+  display: inline-block;
+  border-left: 1px dashed hsl(50, 50%, 50%);
+  height: 2em;
+  width: 1px;
+  vertical-align: middle;
+  margin: 0 4px;
+}
+
+.leaflet-div-icon {
+  background: none;
+  border: 0;
+}
