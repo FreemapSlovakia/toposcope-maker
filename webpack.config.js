@@ -1,5 +1,5 @@
 module.exports = {
-  context: __dirname,
+  context: __dirname + '/src',
   entry: './script.jsx',
   output: {
     path: __dirname,
