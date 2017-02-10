@@ -43847,14 +43847,12 @@ var _require = __webpack_require__(163),
     Marker = _require.Marker;
 
 var Toposcope = __webpack_require__(162);
+var createMarker = __webpack_require__(398);
+var loadPeaks = __webpack_require__(399);
 
-function createIcon(color) {
-  return L.divIcon({ html: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"\n  \t viewBox="0 0 365 560" enable-background="new 0 0 365 560" xml:space="preserve">\n  <g>\n  \t<path fill="' + color + '" stroke="black" stroke-width="20" stroke-linecap="butt" d="M182.9,551.7c0,0.1,0.2,0.3,0.2,0.3S358.3,283,358.3,194.6c0-130.1-88.8-186.7-175.4-186.9\n  \t\tC96.3,7.9,7.5,64.5,7.5,194.6c0,88.4,175.3,357.4,175.3,357.4S182.9,551.7,182.9,551.7z M122.2,187.2c0-33.6,27.2-60.8,60.8-60.8\n  \t\tc33.6,0,60.8,27.2,60.8,60.8S216.5,248,182.9,248C149.4,248,122.2,220.8,122.2,187.2z"/>\n  </g>\n  </svg>', iconAnchor: [10, 30], iconSize: [20, 20] });
-}
-
-var placeIcon = createIcon('red');
-var peakIcon = createIcon('#ddf');
-var activePeakIcon = createIcon('#66f');
+var placeIcon = createMarker('red');
+var peakIcon = createMarker('#ddf');
+var activePeakIcon = createMarker('#66f');
 
 var Main = function (_React$Component) {
   _inherits(Main, _React$Component);
@@ -43881,23 +43879,9 @@ var Main = function (_React$Component) {
           lat = _state$center.lat,
           lng = _state$center.lng;
 
-
       this.setState({ freeze: true });
-
-      var query = '[out:json][timeout:25]; ( node["natural"="peak"] (around:3000,' + lat + ',' + lng + '); ); out body; >; out skel qt;';
-
-      fetch('https://overpass-api.de/api/interpreter', {
-        method: 'POST',
-        body: 'data=' + encodeURIComponent(query)
-      }).then(function (res) {
-        return res.json();
-      }).then(function (data) {
-        _this2.setState({
-          peaks: data.elements.filter(function (_ref) {
-            var name = _ref.tags;
-            return name;
-          })
-        });
+      loadPeaks(lat, lng).then(function (peaks) {
+        return _this2.setState({ peaks: peaks });
       });
     }
   }, {
@@ -43922,19 +43906,23 @@ var Main = function (_React$Component) {
       var _this3 = this;
 
       var position = [48.8, 19];
+      var _state = this.state,
+          center = _state.center,
+          peaks = _state.peaks;
+
       return React.createElement(
         'div',
         null,
         React.createElement(
           Map,
-          { style: { width: '100%', height: '800px' }, center: position, zoom: 9, onMove: this.handleMapMove.bind(this) },
+          { style: { width: '800px', height: '500px' }, center: position, zoom: 9, onMove: this.handleMapMove.bind(this) },
           React.createElement(TileLayer, { url: 'http://{s}.freemap.sk/T/{z}/{x}/{y}.png' }),
-          React.createElement(Marker, { position: this.state.center, icon: placeIcon }),
-          this.state.peaks.map(function (_ref2) {
-            var id = _ref2.id,
-                lat = _ref2.lat,
-                lon = _ref2.lon,
-                active = _ref2.active;
+          React.createElement(Marker, { position: center, icon: placeIcon }),
+          peaks.map(function (_ref) {
+            var id = _ref.id,
+                lat = _ref.lat,
+                lon = _ref.lon,
+                active = _ref.active;
             return React.createElement(Marker, { key: id, position: [lat, lon], onClick: _this3.handlePeakClick.bind(_this3, id), icon: active ? activePeakIcon : peakIcon });
           })
         ),
@@ -43946,7 +43934,7 @@ var Main = function (_React$Component) {
         React.createElement(
           'div',
           null,
-          React.createElement(Toposcope, { baseLat: this.state.center.lat, baseLng: this.state.center.lng, peaks: this.state.peaks })
+          React.createElement(Toposcope, { baseLat: center.lat, baseLng: center.lng, peaks: peaks })
         )
       );
     }
@@ -43956,6 +43944,39 @@ var Main = function (_React$Component) {
 }(React.Component);
 
 ReactDOM.render(React.createElement(Main, null), document.getElementById('main'));
+
+/***/ }),
+/* 397 */,
+/* 398 */
+/***/ (function(module, exports) {
+
+module.exports = function createMarker(color) {
+  return L.divIcon({html: `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+  	 viewBox="0 0 365 560" enable-background="new 0 0 365 560" xml:space="preserve">
+  <g>
+  	<path fill="${color}" stroke="black" stroke-width="20" stroke-linecap="butt" d="M182.9,551.7c0,0.1,0.2,0.3,0.2,0.3S358.3,283,358.3,194.6c0-130.1-88.8-186.7-175.4-186.9
+  		C96.3,7.9,7.5,64.5,7.5,194.6c0,88.4,175.3,357.4,175.3,357.4S182.9,551.7,182.9,551.7z M122.2,187.2c0-33.6,27.2-60.8,60.8-60.8
+  		c33.6,0,60.8,27.2,60.8,60.8S216.5,248,182.9,248C149.4,248,122.2,220.8,122.2,187.2z"/>
+  </g>
+  </svg>`, iconAnchor: [10, 30], iconSize: [20, 20]});
+}
+
+
+/***/ }),
+/* 399 */
+/***/ (function(module, exports) {
+
+module.exports = function loadPeaks(lat, lng, distance = 5000) {
+  const query = `[out:json][timeout:25]; ( node["natural"="peak"] (around:${distance},${lat},${lng}); ); out body; >; out skel qt;`;
+
+  return fetch('https://overpass-api.de/api/interpreter', {
+    method: 'POST',
+    body: 'data=' + encodeURIComponent(query)
+  }).then(res => res.json()).then(data => {
+    return data.elements.filter(({ tags: name }) => name);
+  });
+}
+
 
 /***/ })
 /******/ ]);

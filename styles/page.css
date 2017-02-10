@@ -103,37 +103,9 @@ button.type {
   padding: 8px;
 }
 
-div {
-  margin: auto;
-}
-
 button.selected {
   background-color: hsl(50, 50%, 90%);
   border: 1px inset hsl(50, 50%, 90%);
-}
-
-.work {
-  position: relative;
-}
-
-.table {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-
-.mask {
-  position: absolute;
-  left: 22px;
-  top: 22px;
-  width: 2000px;
-  height: 1500px;
-  pointer-events: none;
-}
-
-.person {
-  position: absolute;
-  pointer-events: none;
 }
 
 .donate {
@@ -143,13 +115,4 @@ button.selected {
 
 .donate * {
   margin: 0;
-}
-
-.vr {
-  display: inline-block;
-  border-left: 1px dashed hsl(50, 50%, 50%);
-  height: 2em;
-  width: 1px;
-  vertical-align: middle;
-  margin: 0 4px;
 }
