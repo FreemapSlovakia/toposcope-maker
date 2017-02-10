@@ -43763,8 +43763,9 @@ var ReactDOM = __webpack_require__(60);
 var _require = __webpack_require__(162),
     Map = _require.Map,
     TileLayer = _require.TileLayer,
-    Marker = _require.Marker,
-    Popup = _require.Popup;
+    Marker = _require.Marker;
+
+var Toposcope = __webpack_require__(396);
 
 function createIcon(color) {
   return L.divIcon({ html: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"\n  \t viewBox="0 0 365 560" enable-background="new 0 0 365 560" xml:space="preserve">\n  <g>\n  \t<path fill="' + color + '" stroke="black" stroke-width="20" stroke-linecap="butt" d="M182.9,551.7c0,0.1,0.2,0.3,0.2,0.3S358.3,283,358.3,194.6c0-130.1-88.8-186.7-175.4-186.9\n  \t\tC96.3,7.9,7.5,64.5,7.5,194.6c0,88.4,175.3,357.4,175.3,357.4S182.9,551.7,182.9,551.7z M122.2,187.2c0-33.6,27.2-60.8,60.8-60.8\n  \t\tc33.6,0,60.8,27.2,60.8,60.8S216.5,248,182.9,248C149.4,248,122.2,220.8,122.2,187.2z"/>\n  </g>\n  </svg>', iconAnchor: [10, 30], iconSize: [20, 20] });
@@ -43864,50 +43865,7 @@ var Main = function (_React$Component) {
         React.createElement(
           'div',
           null,
-          React.createElement(
-            'svg',
-            { xmlns: 'http://www.w3.org/2000/svg', width: '800', height: '800', viewBox: '-100 -100 200 200' },
-            React.createElement(
-              'defs',
-              null,
-              this.state.peaks.map(function (_ref3) {
-                var id = _ref3.id,
-                    lat = _ref3.lat,
-                    lon = _ref3.lon;
-
-                var b = Math.PI + bearing(_this3.state.center.lat, _this3.state.center.lng, lat, lon);
-                return React.createElement('path', { id: 'p' + id, key: id, d: 'M ' + Math.sin(b) * 15 + ' ' + Math.cos(b) * 15 + ' L ' + Math.sin(b) * 90 + ' ' + Math.cos(b) * 90 });
-              })
-            ),
-            this.state.peaks.map(function (_ref4) {
-              var id = _ref4.id;
-              return React.createElement('use', { key: id, xlinkHref: '#p' + id, className: 'line' });
-            }),
-            this.state.peaks.map(function (_ref5) {
-              var id = _ref5.id,
-                  lat = _ref5.lat,
-                  lon = _ref5.lon,
-                  _ref5$tags = _ref5.tags,
-                  name = _ref5$tags.name,
-                  ele = _ref5$tags.ele;
-              return React.createElement(
-                'text',
-                { key: id, x: '-3', y: '100', dy: '-2', className: 'lineText' },
-                React.createElement(
-                  'textPath',
-                  { xlinkHref: '#p' + id, startOffset: '100%' },
-                  name,
-                  ' ',
-                  ele,
-                  ' m, ',
-                  Math.round(L.latLng(lat, lon).distanceTo(L.latLng(_this3.state.center.lat, _this3.state.center.lng)) / 100) / 10,
-                  ' km'
-                )
-              );
-            }),
-            React.createElement('circle', { cx: '0', cy: '0', r: '90', className: 'line' }),
-            React.createElement('circle', { cx: '0', cy: '0', r: '15', className: 'line' })
-          )
+          React.createElement(Toposcope, { baseLat: this.state.center.lat, baseLng: this.state.center.lng, peaks: this.state.peaks })
         )
       );
     }
@@ -43918,24 +43876,85 @@ var Main = function (_React$Component) {
 
 ReactDOM.render(React.createElement(Main, null), document.getElementById('main'));
 
+/***/ }),
+/* 396 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var React = __webpack_require__(3);
+
+module.exports = Toposcope;
+
+function Toposcope(_ref) {
+  var baseLat = _ref.baseLat,
+      baseLng = _ref.baseLng,
+      peaks = _ref.peaks;
+
+  return React.createElement(
+    "svg",
+    { xmlns: "http://www.w3.org/2000/svg", width: "800", height: "800", viewBox: "-100 -100 200 200" },
+    React.createElement(
+      "defs",
+      null,
+      peaks.map(function (_ref2) {
+        var id = _ref2.id,
+            lat = _ref2.lat,
+            lon = _ref2.lon;
+
+        var b = Math.PI + bearing(toRad(baseLat), toRad(baseLng), toRad(lat), toRad(lon));
+        return React.createElement("path", { id: "p" + id, key: id, d: "M " + Math.sin(b) * 15 + " " + Math.cos(b) * 15 + " L " + Math.sin(b) * 90 + " " + Math.cos(b) * 90 });
+      })
+    ),
+    peaks.map(function (_ref3) {
+      var id = _ref3.id;
+      return React.createElement("use", { key: id, xlinkHref: "#p" + id, className: "line" });
+    }),
+    peaks.map(function (_ref4) {
+      var id = _ref4.id,
+          lat = _ref4.lat,
+          lon = _ref4.lon,
+          _ref4$tags = _ref4.tags,
+          name = _ref4$tags.name,
+          ele = _ref4$tags.ele;
+      return React.createElement(
+        "text",
+        { key: id, x: "-3", y: "100", dy: "-2", className: "lineText" },
+        React.createElement(
+          "textPath",
+          { xlinkHref: "#p" + id, startOffset: "100%" },
+          name,
+          " ",
+          ele,
+          " m, ",
+          Math.round(L.latLng(lat, lon).distanceTo(L.latLng(baseLat, baseLng)) / 100) / 10,
+          " km"
+        )
+      );
+    }),
+    React.createElement("circle", { cx: "0", cy: "0", r: "90", className: "line" }),
+    React.createElement("circle", { cx: "0", cy: "0", r: "15", className: "line" })
+  );
+}
+
+Toposcope.propTypes = {
+  baseLat: React.PropTypes.number.isRequired,
+  baseLng: React.PropTypes.number.isRequired,
+  peaks: React.PropTypes.array.isRequired
+};
+
+var PI2 = 2 * Math.PI;
+
 function bearing(lat1, lng1, lat2, lng2) {
-  lat1 = toRad(lat1);
-  lng1 = toRad(lng1);
-  lat2 = toRad(lat2);
-  lng2 = toRad(lng2);
   var dLon = lng2 - lng1;
   var y = Math.sin(dLon) * Math.cos(lat2);
   var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-  var brng = toDeg(Math.atan2(y, x));
-  return toRad(360 - (brng + 360) % 360);
+  return PI2 - (Math.atan2(y, x) + PI2) % PI2;
 }
 
 function toRad(deg) {
   return deg * Math.PI / 180;
-}
-
-function toDeg(rad) {
-  return rad * 180 / Math.PI;
 }
 
 /***/ })
