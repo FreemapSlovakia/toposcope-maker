@@ -43802,7 +43802,7 @@ var Main = function (_React$Component) {
 
       this.setState({ freeze: true });
 
-      var query = '\n      [out:json][timeout:25];\n      (\n        node["natural"="peak"] (around:10000,' + lat + ',' + lng + ');\n      );\n      out body;\n      >;\n      out skel qt;';
+      var query = '[out:json][timeout:25]; ( node["natural"="peak"] (around:3000,' + lat + ',' + lng + '); ); out body; >; out skel qt;';
 
       fetch('https://overpass-api.de/api/interpreter', {
         method: 'POST',
@@ -43811,7 +43811,10 @@ var Main = function (_React$Component) {
         return res.json();
       }).then(function (data) {
         _this2.setState({
-          peaks: data.elements
+          peaks: data.elements.filter(function (_ref) {
+            var name = _ref.tags;
+            return name;
+          })
         });
       });
     }
@@ -43845,11 +43848,11 @@ var Main = function (_React$Component) {
           { style: { width: '100%', height: '800px' }, center: position, zoom: 9, onMove: this.handleMapMove.bind(this) },
           React.createElement(TileLayer, { url: 'http://{s}.freemap.sk/T/{z}/{x}/{y}.png' }),
           React.createElement(Marker, { position: this.state.center, icon: placeIcon }),
-          this.state.peaks.map(function (_ref) {
-            var id = _ref.id,
-                lat = _ref.lat,
-                lon = _ref.lon,
-                active = _ref.active;
+          this.state.peaks.map(function (_ref2) {
+            var id = _ref2.id,
+                lat = _ref2.lat,
+                lon = _ref2.lon,
+                active = _ref2.active;
             return React.createElement(Marker, { key: id, position: [lat, lon], onClick: _this3.handlePeakClick.bind(_this3, id), icon: active ? activePeakIcon : peakIcon });
           })
         ),
@@ -43857,6 +43860,54 @@ var Main = function (_React$Component) {
           'button',
           { onClick: this.handleLoad.bind(this) },
           'Load'
+        ),
+        React.createElement(
+          'div',
+          null,
+          React.createElement(
+            'svg',
+            { xmlns: 'http://www.w3.org/2000/svg', width: '800', height: '800', viewBox: '-100 -100 200 200' },
+            React.createElement(
+              'defs',
+              null,
+              this.state.peaks.map(function (_ref3) {
+                var id = _ref3.id,
+                    lat = _ref3.lat,
+                    lon = _ref3.lon;
+
+                var b = Math.PI + bearing(_this3.state.center.lat, _this3.state.center.lng, lat, lon);
+                return React.createElement('path', { id: 'p' + id, key: id, d: 'M ' + Math.sin(b) * 15 + ' ' + Math.cos(b) * 15 + ' L ' + Math.sin(b) * 90 + ' ' + Math.cos(b) * 90 });
+              })
+            ),
+            this.state.peaks.map(function (_ref4) {
+              var id = _ref4.id;
+              return React.createElement('use', { key: id, xlinkHref: '#p' + id, className: 'line' });
+            }),
+            this.state.peaks.map(function (_ref5) {
+              var id = _ref5.id,
+                  lat = _ref5.lat,
+                  lon = _ref5.lon,
+                  _ref5$tags = _ref5.tags,
+                  name = _ref5$tags.name,
+                  ele = _ref5$tags.ele;
+              return React.createElement(
+                'text',
+                { key: id, x: '-3', y: '100', dy: '-2', className: 'lineText' },
+                React.createElement(
+                  'textPath',
+                  { xlinkHref: '#p' + id, startOffset: '100%' },
+                  name,
+                  ' ',
+                  ele,
+                  ' m, ',
+                  Math.round(L.latLng(lat, lon).distanceTo(L.latLng(_this3.state.center.lat, _this3.state.center.lng)) / 100) / 10,
+                  ' km'
+                )
+              );
+            }),
+            React.createElement('circle', { cx: '0', cy: '0', r: '90', className: 'line' }),
+            React.createElement('circle', { cx: '0', cy: '0', r: '15', className: 'line' })
+          )
         )
       );
     }
@@ -43866,6 +43917,26 @@ var Main = function (_React$Component) {
 }(React.Component);
 
 ReactDOM.render(React.createElement(Main, null), document.getElementById('main'));
+
+function bearing(lat1, lng1, lat2, lng2) {
+  lat1 = toRad(lat1);
+  lng1 = toRad(lng1);
+  lat2 = toRad(lat2);
+  lng2 = toRad(lng2);
+  var dLon = lng2 - lng1;
+  var y = Math.sin(dLon) * Math.cos(lat2);
+  var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+  var brng = toDeg(Math.atan2(y, x));
+  return toRad(360 - (brng + 360) % 360);
+}
+
+function toRad(deg) {
+  return deg * Math.PI / 180;
+}
+
+function toDeg(rad) {
+  return rad * 180 / Math.PI;
+}
 
 /***/ })
 /******/ ]);

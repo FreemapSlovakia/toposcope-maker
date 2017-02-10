@@ -158,3 +158,15 @@ button.selected {
   background: none;
   border: 0;
 }
+
+.line {
+  stroke: #000000;
+  stroke-width: 0.5px;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.lineText {
+  font-size: 3.5px;
+  text-anchor: end;
+}
