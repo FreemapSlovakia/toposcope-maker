@@ -2,14 +2,17 @@
 
 Web app for making toposcopes.
 
-## Compiling
+## Compiling and running in the dev mode
 ```
 sudo npm i -g webpack
 npm i
 webpack --watch
 ```
 
-For production:
+## Compiling for the production
+
 ```
-webpack --optimize-minimize
+sudo npm i -g webpack
+npm i
+NODE_ENV=production webpack
 ```

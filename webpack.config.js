@@ -1,3 +1,5 @@
+const webpack = require("webpack");
+
 module.exports = {
   context: __dirname + '/src',
   entry: './script.jsx',
@@ -8,7 +10,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
@@ -16,5 +18,13 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: process.env.NODE_ENV === 'production' ? [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin()
+  ] : []
 };

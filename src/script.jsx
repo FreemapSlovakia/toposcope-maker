@@ -44,19 +44,26 @@ class Main extends React.Component {
     const { center, peaks } = this.state;
     return (
       <div>
-        <Map style={{ width: '800px', height: '500px' }} center={position} zoom={9} onMove={this.handleMapMove.bind(this)}>
-          <TileLayer url="http://{s}.freemap.sk/T/{z}/{x}/{y}.png"/>
-          <Marker position={center} icon={placeIcon}/>
+        <div className="grid">
+          <div className="col-1-2">
+            <Map style={{ width: '100%', height: '500px' }} center={position} zoom={9} onMove={this.handleMapMove.bind(this)}>
+              <TileLayer url="http://{s}.freemap.sk/T/{z}/{x}/{y}.png"/>
+              <Marker position={center} icon={placeIcon}/>
 
-          {peaks.map(({ id, lat, lon, active }) =>
-            <Marker key={id} position={[ lat, lon ]} onClick={this.handlePeakClick.bind(this, id)} icon={active ? activePeakIcon : peakIcon}/>
-          )}
-        </Map>
+              {peaks.map(({ id, lat, lon, active }) =>
+                <Marker key={id} position={[ lat, lon ]} onClick={this.handlePeakClick.bind(this, id)} icon={active ? activePeakIcon : peakIcon}/>
+              )}
+            </Map>
+          </div>
+          <div className="col-1-2">
+            <button onClick={this.handleLoad.bind(this)}>Load</button>
+          </div>
+        </div>
 
-        <button onClick={this.handleLoad.bind(this)}>Load</button>
-
-        <div>
-          <Toposcope baseLat={center.lat} baseLng={center.lng} peaks={peaks}/>
+        <div className="grid">
+          <div className="col-1-1">
+            <Toposcope baseLat={center.lat} baseLng={center.lng} peaks={peaks}/>
+          </div>
         </div>
       </div>
     );

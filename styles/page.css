@@ -1,20 +1,8 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic);
+
 body {
-  font-family: Verdana, Geneva, sans-serif;
-  font-size: 10pt;
+  font-family: 'Lato', Helvetica, sans-serif;
   background-color: hsl(50, 100%, 90%);
-}
-
-hr {
-  border-top: 1px dashed hsl(50, 50%, 50%);
-  border-bottom: 0;
-}
-
-.header > * {
-  margin: 4px;
-}
-
-.header h1 {
-  margin-left: 0;
 }
 
 form {
@@ -22,42 +10,8 @@ form {
   padding: 0;
 }
 
-h1 {
-  font-size: 1.5em;
-  display: inline;
-}
-
 a {
   color: black;
-}
-
-table {
-  border-spacing: 1px;
-  border-collapse: separate;
-}
-
-td {
-  background-color: white;
-  cursor: pointer;
-  padding: 0;
-}
-
-.col {
-  background-color: silver;
-  height: 20px;
-}
-
-.row {
-  background-color: silver;
-}
-
-.row div {
-  width: 20px;
-}
-
-input[type=file] {
-  display: none;
-  width: 1px;
 }
 
 input[type=number] {
