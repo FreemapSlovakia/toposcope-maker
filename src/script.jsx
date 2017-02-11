@@ -6,8 +6,8 @@ const createMarker = require('./markers.js');
 const loadPeaks = require('./poiLoader.js');
 
 const placeIcon = createMarker('red');
-const peakIcon = createMarker('#ddf');
-const activePeakIcon = createMarker('#66f');
+const poiIcon = createMarker('#ddf');
+const activePoiIcon = createMarker('#66f');
 
 class Main extends React.Component {
 
@@ -16,53 +16,93 @@ class Main extends React.Component {
 
     this.state = {
       center: L.latLng(48.8, 19),
-      peaks: [],
-      freeze: false
+      pois: [],
+      mode: '',
+      activePoiId: null
     };
+
+    this.nextId = -1;
   }
 
   handleLoad() {
     const { lat, lng } = this.state.center;
-    this.setState({ freeze: true });
-    loadPeaks(lat, lng).then(peaks => this.setState({ peaks }));
-  }
-
-  handleMapMove(e) {
-    if (!this.state.freeze) {
-      this.setState({ center: e.target.getCenter() });
+    let radius = window.prompt('Radius in meters? Must be less than 20000.', 1000);
+    radius = parseFloat(radius);
+    if (radius > 0 && radius <= 20000) {
+      loadPeaks(lat, lng, radius).then(pois => this.setState({ pois: [ ...this.state.pois.filter(({ id1 }) => pois.find(({ id2 }) => id1 !== id2) !== -1), ...pois ] }));
     }
   }
 
-  handlePeakClick(id) {
-    this.setState({
-      peaks: this.state.peaks.map(peak => peak.id === id ? Object.assign({}, peak, { active: !peak.active }) : peak)
-    });
+  handleMapMove(e) {
+    this.setState({ center: e.target.getCenter() });
+  }
+
+  handlePoiClick(activePoiId) {
+    if (this.state.mode === 'delete_poi') {
+      this.setState({ activePoiId: null, pois: [ ...this.state.pois.filter(({ id }) => id !== activePoiId) ] });
+    } else {
+      this.setState({ activePoiId });
+    }
+  }
+
+  handleMapClick(e) {
+    if (this.state.mode === 'add_poi') {
+      this.setState({ pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId++ } ] });
+    }
+  }
+
+  handleTextChange(e) {
+    const activePoi = this.state.pois.find(({ id }) => id === this.state.activePoiId);
+    if (activePoi) {
+      this.setState({ pois: [ ...this.state.pois.filter(poi => poi !== activePoi),
+        Object.assign({}, activePoi, { text: e.target.value }) ] });
+    }
+  }
+
+  handleAddPois() {
+    this.setState({ mode: this.state.mode === 'add_poi' ? '' : 'add_poi' });
+  }
+
+  handleDeletePois() {
+    this.setState({ mode: this.state.mode === 'delete_poi' ? '' : 'delete_poi' });
+  }
+
+  handleModeMove() {
+    this.setState({ mode: this.state.mode === 'move_poi' ? '' : 'move_poi' });
   }
 
   render() {
     const position = [48.8, 19];
-    const { center, peaks } = this.state;
+    const { center, pois, activePoiId, mode } = this.state;
+    const activePoi = pois.find(({ id }) => id === activePoiId);
+
     return (
       <div>
         <div className="grid">
           <div className="col-1-2">
-            <Map style={{ width: '100%', height: '500px' }} center={position} zoom={9} onMove={this.handleMapMove.bind(this)}>
+            <Map style={{ width: '100%', height: '500px' }} center={position} zoom={9} onMove={this.handleMapMove.bind(this)} onClick={this.handleMapClick.bind(this)}>
               <TileLayer url="http://{s}.freemap.sk/T/{z}/{x}/{y}.png"/>
               <Marker position={center} icon={placeIcon}/>
 
-              {peaks.map(({ id, lat, lon, active }) =>
-                <Marker key={id} position={[ lat, lon ]} onClick={this.handlePeakClick.bind(this, id)} icon={active ? activePeakIcon : peakIcon}/>
+              {pois.map(({ id, lat, lng }) =>
+                <Marker key={id} position={[ lat, lng ]} onClick={this.handlePoiClick.bind(this, id)} icon={id === activePoiId ? activePoiIcon : poiIcon}/>
               )}
             </Map>
           </div>
           <div className="col-1-2">
-            <button onClick={this.handleLoad.bind(this)}>Load</button>
+            <button onClick={this.handleLoad.bind(this)}>Load Peaks</button>
+            <button className={ mode === 'move_poi' ? 'active' : '' } onClick={this.handleModeMove.bind(this)}>Move</button>
+            <button className={ mode === 'add_poi' ? 'active' : '' } onClick={this.handleAddPois.bind(this)}>Add</button>
+            <button className={ mode === 'delete_poi' ? 'active' : '' } onClick={this.handleDeletePois.bind(this)}>Delete</button>
+            {activePoi &&
+              <input type="text" value={activePoi.text} onChange={this.handleTextChange.bind(this)}/>
+            }
           </div>
         </div>
 
         <div className="grid">
           <div className="col-1-1">
-            <Toposcope baseLat={center.lat} baseLng={center.lng} peaks={peaks}/>
+            <Toposcope baseLat={center.lat} baseLng={center.lng} pois={pois}/>
           </div>
         </div>
       </div>

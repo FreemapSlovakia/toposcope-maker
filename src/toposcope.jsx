@@ -2,23 +2,23 @@ const React = require('react');
 
 module.exports = Toposcope;
 
-function Toposcope({ baseLat, baseLng, peaks }) {
+function Toposcope({ baseLat, baseLng, pois }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="-100 -100 200 200">
       <defs>
-        {peaks.map(({ id, lat, lon }) => {
-          const b = Math.PI + bearing(toRad(baseLat), toRad(baseLng), toRad(lat), toRad(lon));
+        {pois.map(({ id, lat, lng }) => {
+          const b = Math.PI + bearing(toRad(baseLat), toRad(baseLng), toRad(lat), toRad(lng));
           return <path id={`p${id}`} key={id} d={`M ${Math.sin(b) * 15} ${Math.cos(b) * 15} L ${Math.sin(b) * 90} ${Math.cos(b) * 90}`}/>;
         })}
       </defs>
 
-      {peaks.map(({ id }) => <use key={id} xlinkHref={`#p${id}`} className="line"/>)}
+      {pois.map(({ id }) => <use key={id} xlinkHref={`#p${id}`} className="line"/>)}
 
       {
-        peaks.map(({ id, lat, lon, tags: { name, ele } }) => (
+        pois.map(({ id, lat, lng, text }) => (
           <text key={id} x="-3" y="100" dy="-2" className="lineText">
             <textPath xlinkHref={`#p${id}`} startOffset="100%">
-              {name} {ele} m, {Math.round(L.latLng(lat, lon).distanceTo(L.latLng(baseLat, baseLng)) / 100) / 10} km
+              {text.replace('{distance}', Math.round(L.latLng(lat, lng).distanceTo(L.latLng(baseLat, baseLng)) / 100) / 10)}
             </textPath>
           </text>
         ))
@@ -33,7 +33,7 @@ function Toposcope({ baseLat, baseLng, peaks }) {
 Toposcope.propTypes = {
   baseLat: React.PropTypes.number.isRequired,
   baseLng: React.PropTypes.number.isRequired,
-  peaks: React.PropTypes.array.isRequired
+  pois: React.PropTypes.array.isRequired
 };
 
 const PI2 = 2 * Math.PI;

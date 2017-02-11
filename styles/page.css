@@ -44,7 +44,7 @@ button:hover, .button:hover, select:hover {
   border-color: hsl(50, 50%, 80%);
 }
 
-button:active, .button:active, select:active {
+button:active, .button:active, select:active, .active {
   background-color: hsl(50, 50%, 90%);
   border: 1px inset hsl(50, 50%, 90%);
 }
