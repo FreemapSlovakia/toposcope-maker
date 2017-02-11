@@ -4,6 +4,7 @@ const { Map, TileLayer, Marker } = require('react-leaflet');
 const Toposcope = require('./toposcope.jsx');
 const createMarker = require('./markers.js');
 const loadPeaks = require('./poiLoader.js');
+const FileSaver = require('file-saver');
 
 const placeIcon = createMarker('red');
 const poiIcon = createMarker('#ddf');
@@ -86,6 +87,10 @@ class Main extends React.Component {
     ] });
   }
 
+  handleSave() {
+    FileSaver.saveAs(new Blob([ this.refs.toposcope.innerHTML ], { type: 'image/svg+xml' }), 'topograph.svg');
+  }
+
   render() {
     const position = [48.8, 19];
     const { center, pois, activePoiId, mode } = this.state;
@@ -116,11 +121,12 @@ class Main extends React.Component {
             {activePoi &&
               <input type="text" value={activePoi.text} onChange={this.handleTextChange.bind(this)}/>
             }
+            <button onClick={this.handleSave.bind(this)}>Save Toposcope</button>
           </div>
         </div>
 
         <div className="grid">
-          <div className="col-1-1">
+          <div className="col-1-1" ref="toposcope">
             <Toposcope baseLat={center.lat} baseLng={center.lng} pois={pois}/>
           </div>
         </div>
