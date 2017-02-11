@@ -47,15 +47,22 @@ class Main extends React.Component {
 
   handleMapClick(e) {
     if (this.state.mode === 'add_poi') {
-      this.setState({ pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId++ } ] });
+      this.setState({
+        activePoiId: null,
+        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId++ } ]
+      });
+    } else {
+      this.setState({ activePoiId: null, });
     }
   }
 
   handleTextChange(e) {
     const activePoi = this.state.pois.find(({ id }) => id === this.state.activePoiId);
     if (activePoi) {
-      this.setState({ pois: [ ...this.state.pois.filter(poi => poi !== activePoi),
-        Object.assign({}, activePoi, { text: e.target.value }) ] });
+      this.setState({ pois: [
+        ...this.state.pois.filter(poi => poi !== activePoi),
+        Object.assign({}, activePoi, { text: e.target.value })
+      ] });
     }
   }
 
@@ -69,6 +76,14 @@ class Main extends React.Component {
 
   handleModeMove() {
     this.setState({ mode: this.state.mode === 'move_poi' ? '' : 'move_poi' });
+  }
+
+  handlePoiDrag(id2, e) {
+    const activePoi = this.state.pois.find(({ id }) => id === id2);
+    this.setState({ pois: [
+      ...this.state.pois.filter(poi => poi !== activePoi),
+      Object.assign({}, activePoi, { lat: e.latlng.lat, lng: e.latlng.lng })
+    ] });
   }
 
   render() {
@@ -85,7 +100,11 @@ class Main extends React.Component {
               <Marker position={center} icon={placeIcon}/>
 
               {pois.map(({ id, lat, lng }) =>
-                <Marker key={id} position={[ lat, lng ]} onClick={this.handlePoiClick.bind(this, id)} icon={id === activePoiId ? activePoiIcon : poiIcon}/>
+                <Marker key={id} position={[ lat, lng ]}
+                  onClick={this.handlePoiClick.bind(this, id)}
+                  icon={id === activePoiId ? activePoiIcon : poiIcon}
+                  onDrag={this.handlePoiDrag.bind(this, id)}
+                  draggable={mode === 'move_poi'}/>
               )}
             </Map>
           </div>
