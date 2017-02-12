@@ -6,11 +6,6 @@ function Toposcope({ baseLat, baseLng, pois }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="-100 -100 200 200">
       <style>{`
-        .leaflet-div-icon {
-          background: none;
-          border: 0;
-        }
-
         .line {
           stroke: #000000;
           stroke-width: 0.3px;
