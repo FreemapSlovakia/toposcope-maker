@@ -113,12 +113,12 @@ class Main extends React.Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <NavItem active={mode === 'load_peaks'} onClick={this.handleSetMode.bind(this, 'load_peaks')}>Load Peaks</NavItem>
               <NavItem active={mode === 'set_viewer'} onClick={this.handleSetMode.bind(this, 'set_viewer')}>Place Observer</NavItem>
+              <NavItem active={mode === 'load_peaks'} onClick={this.handleSetMode.bind(this, 'load_peaks')}>Load Peaks</NavItem>
               <NavItem active={mode === 'add_poi'} onClick={this.handleSetMode.bind(this, 'add_poi')}>Add POI</NavItem>
               <NavItem active={mode === 'move_poi'} onClick={this.handleSetMode.bind(this, 'move_poi')}>Move</NavItem>
               <NavItem active={mode === 'delete_poi'} onClick={this.handleSetMode.bind(this, 'delete_poi')}>Delete</NavItem>
-              <NavItem onClick={this.handleSave.bind(this)}>Save Toposcope</NavItem>
+              <NavItem onClick={this.handleSave.bind(this)} disabled={!viewer}>Save Toposcope</NavItem>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
