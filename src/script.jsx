@@ -51,17 +51,19 @@ class Main extends React.Component {
   handleMapClick(e) {
     if (this.state.mode === 'add_poi') {
       this.setState({
-        activePoiId: null,
-        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId++ } ]
+        activePoiId: this.nextId,
+        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId } ]
       });
+      this.nextId++;
     } else if (this.state.mode === 'set_viewer') {
-      this.setState({ viewer: e.latlng });
+      this.setState({ viewer: e.latlng, activePoiId: null });
     } else if (this.state.mode === 'load_peaks') {
       const { lat, lng } = e.latlng;
       let radius = window.prompt('Radius in meters? Must be less than 20000.', 1000);
       radius = parseFloat(radius);
       if (radius > 0 && radius <= 20000) {
-        loadPeaks(lat, lng, radius).then(pois => this.setState({ pois: [ ...this.state.pois.filter(({ id1 }) => pois.find(({ id2 }) => id1 !== id2) !== -1), ...pois ] }));
+        loadPeaks(lat, lng, radius).then(pois => this.setState({ activePoiId: null,
+          pois: [ ...this.state.pois.filter(({ id1 }) => pois.find(({ id2 }) => id1 !== id2) !== -1), ...pois ] }));
       }
     } else {
       this.setState({ activePoiId: null, });
@@ -156,7 +158,8 @@ class Main extends React.Component {
               {activePoi &&
                 <FormGroup>
                   <ControlLabel>Label</ControlLabel>
-                  <FormControl type="text" value={activePoi.text} onChange={this.handleTextChange.bind(this)}/>
+                  <FormControl type="text" value={activePoi.text} onChange={this.handleTextChange.bind(this)}
+                    placeholder="Name, {d} km"/>
                 </FormGroup>
               }
             </div>

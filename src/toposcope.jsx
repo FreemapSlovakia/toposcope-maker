@@ -32,7 +32,7 @@ function Toposcope({ baseLat, baseLng, pois }) {
         pois.map(({ id, lat, lng, text }) => (
           <text key={id} x="-3" y="100" dy="-2" className="lineText">
             <textPath xlinkHref={`#p${id}`} startOffset="100%">
-              {text.replace('{distance}', Math.round(L.latLng(lat, lng).distanceTo(L.latLng(baseLat, baseLng)) / 100) / 10)}
+              {text.replace('{d}', Math.round(L.latLng(lat, lng).distanceTo(L.latLng(baseLat, baseLng)) / 100) / 10)}
             </textPath>
           </text>
         ))
