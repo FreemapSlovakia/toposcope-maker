@@ -24,6 +24,7 @@ class Main extends React.Component {
 
     this.state = {
       center: L.latLng(48.8, 19),
+      zoom: 9,
       viewer: null,
       pois: [],
       mode: '',
@@ -31,11 +32,24 @@ class Main extends React.Component {
       fetching: false
     };
 
-    this.nextId = -1;
+    const toposcope = localStorage.getItem('toposcope');
+    if (toposcope) {
+      Object.assign(this.state, JSON.parse(toposcope));
+    }
+
+    this.nextId = this.state.pois.reduce((a, { id }) => Math.min(a, id), 0) - 1;
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem('toposcope', JSON.stringify(this.state));
   }
 
   handleMapMove(e) {
     this.setState({ center: e.target.getCenter() });
+  }
+
+  handleMapZoom(e) {
+    this.setState({ zoom: e.target.getZoom() });
   }
 
   handlePoiClick(poiId) {
@@ -56,7 +70,7 @@ class Main extends React.Component {
         activePoiId: this.nextId,
         pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId } ]
       });
-      this.nextId++;
+      this.nextId--;
     } else if (this.state.mode === 'set_viewer') {
       this.setState({ viewer: e.latlng, activePoiId: null });
     } else if (this.state.mode === 'load_peaks') {
@@ -107,8 +121,7 @@ class Main extends React.Component {
   }
 
   render() {
-    const position = [48.8, 19];
-    const { viewer, pois, activePoiId, mode, fetching } = this.state;
+    const { viewer, pois, activePoiId, mode, fetching, center, zoom } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
 
     return (
@@ -132,7 +145,10 @@ class Main extends React.Component {
         <div className="container">
           <div className="row">
             <div className="col-md-6">
-                <Map style={{ width: '100%', height: '500px' }} center={position} zoom={9} onMove={this.handleMapMove.bind(this)} onClick={this.handleMapClick.bind(this)}>
+                <Map style={{ width: '100%', height: '500px' }} center={center} zoom={zoom}
+                    onMove={this.handleMapMove.bind(this)}
+                    onClick={this.handleMapClick.bind(this)}
+                    onZoom={this.handleMapZoom.bind(this)}>
                   <TileLayer url="http://{s}.freemap.sk/T/{z}/{x}/{y}.png"/>
                   {viewer &&
                     <Marker position={viewer} icon={placeIcon}

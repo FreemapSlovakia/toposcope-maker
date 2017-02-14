@@ -50021,6 +50021,7 @@ var Main = function (_React$Component) {
 
     _this.state = {
       center: L.latLng(48.8, 19),
+      zoom: 9,
       viewer: null,
       pois: [],
       mode: '',
@@ -50028,14 +50029,32 @@ var Main = function (_React$Component) {
       fetching: false
     };
 
-    _this.nextId = -1;
+    var toposcope = localStorage.getItem('toposcope');
+    if (toposcope) {
+      Object.assign(_this.state, JSON.parse(toposcope));
+    }
+
+    _this.nextId = _this.state.pois.reduce(function (a, _ref) {
+      var id = _ref.id;
+      return Math.min(a, id);
+    }, 0) - 1;
     return _this;
   }
 
   _createClass(Main, [{
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      localStorage.setItem('toposcope', JSON.stringify(this.state));
+    }
+  }, {
     key: 'handleMapMove',
     value: function handleMapMove(e) {
       this.setState({ center: e.target.getCenter() });
+    }
+  }, {
+    key: 'handleMapZoom',
+    value: function handleMapZoom(e) {
+      this.setState({ zoom: e.target.getZoom() });
     }
   }, {
     key: 'handlePoiClick',
@@ -50045,8 +50064,8 @@ var Main = function (_React$Component) {
           this.setState({ viewer: null });
         }
       } else if (this.state.mode === 'delete_poi') {
-        this.setState({ activePoiId: null, pois: [].concat(_toConsumableArray(this.state.pois.filter(function (_ref) {
-            var id = _ref.id;
+        this.setState({ activePoiId: null, pois: [].concat(_toConsumableArray(this.state.pois.filter(function (_ref2) {
+            var id = _ref2.id;
             return id !== poiId;
           }))) });
       } else {
@@ -50063,7 +50082,7 @@ var Main = function (_React$Component) {
           activePoiId: this.nextId,
           pois: [].concat(_toConsumableArray(this.state.pois), [{ lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId }])
         });
-        this.nextId++;
+        this.nextId--;
       } else if (this.state.mode === 'set_viewer') {
         this.setState({ viewer: e.latlng, activePoiId: null });
       } else if (this.state.mode === 'load_peaks') {
@@ -50077,10 +50096,10 @@ var Main = function (_React$Component) {
           this.setState({ fetching: true });
           loadPeaks(lat, lng, radius).then(function (pois) {
             _this2.setState({ activePoiId: null,
-              pois: [].concat(_toConsumableArray(_this2.state.pois.filter(function (_ref2) {
-                var id1 = _ref2.id1;
-                return pois.find(function (_ref3) {
-                  var id2 = _ref3.id2;
+              pois: [].concat(_toConsumableArray(_this2.state.pois.filter(function (_ref3) {
+                var id1 = _ref3.id1;
+                return pois.find(function (_ref4) {
+                  var id2 = _ref4.id2;
                   return id1 !== id2;
                 }) !== -1;
               })), _toConsumableArray(pois)) });
@@ -50097,8 +50116,8 @@ var Main = function (_React$Component) {
     value: function handleTextChange(e) {
       var _this3 = this;
 
-      var activePoi = this.state.pois.find(function (_ref4) {
-        var id = _ref4.id;
+      var activePoi = this.state.pois.find(function (_ref5) {
+        var id = _ref5.id;
         return id === _this3.state.activePoiId;
       });
       if (activePoi) {
@@ -50116,8 +50135,8 @@ var Main = function (_React$Component) {
         this.setState({ viewer: e.latlng });
       } else {
         (function () {
-          var activePoi = _this4.state.pois.find(function (_ref5) {
-            var id = _ref5.id;
+          var activePoi = _this4.state.pois.find(function (_ref6) {
+            var id = _ref6.id;
             return id === poiId;
           });
           _this4.setState({ pois: [].concat(_toConsumableArray(_this4.state.pois.filter(function (poi) {
@@ -50142,16 +50161,17 @@ var Main = function (_React$Component) {
     value: function render() {
       var _this5 = this;
 
-      var position = [48.8, 19];
       var _state = this.state,
           viewer = _state.viewer,
           pois = _state.pois,
           activePoiId = _state.activePoiId,
           mode = _state.mode,
-          fetching = _state.fetching;
+          fetching = _state.fetching,
+          center = _state.center,
+          zoom = _state.zoom;
 
-      var activePoi = pois.find(function (_ref6) {
-        var id = _ref6.id;
+      var activePoi = pois.find(function (_ref7) {
+        var id = _ref7.id;
         return id === activePoiId;
       });
 
@@ -50221,17 +50241,20 @@ var Main = function (_React$Component) {
               { className: 'col-md-6' },
               React.createElement(
                 Map,
-                { style: { width: '100%', height: '500px' }, center: position, zoom: 9, onMove: this.handleMapMove.bind(this), onClick: this.handleMapClick.bind(this) },
+                { style: { width: '100%', height: '500px' }, center: center, zoom: zoom,
+                  onMove: this.handleMapMove.bind(this),
+                  onClick: this.handleMapClick.bind(this),
+                  onZoom: this.handleMapZoom.bind(this) },
                 React.createElement(TileLayer, { url: 'http://{s}.freemap.sk/T/{z}/{x}/{y}.png' }),
                 viewer && React.createElement(Marker, { position: viewer, icon: placeIcon,
                   draggable: mode === 'move_poi',
                   onClick: this.handlePoiClick.bind(this, 'viewer'),
                   onDrag: this.handlePoiDrag.bind(this, 'viewer')
                 }),
-                pois.map(function (_ref7) {
-                  var id = _ref7.id,
-                      lat = _ref7.lat,
-                      lng = _ref7.lng;
+                pois.map(function (_ref8) {
+                  var id = _ref8.id,
+                      lat = _ref8.lat,
+                      lng = _ref8.lng;
                   return React.createElement(Marker, { key: id, position: [lat, lng],
                     onClick: _this5.handlePoiClick.bind(_this5, id),
                     onDrag: _this5.handlePoiDrag.bind(_this5, id),
