@@ -49993,7 +49993,8 @@ var ReactDOM = __webpack_require__(55);
 var _require = __webpack_require__(229),
     Map = _require.Map,
     TileLayer = _require.TileLayer,
-    Marker = _require.Marker;
+    Marker = _require.Marker,
+    LayersControl = _require.LayersControl;
 
 var Toposcope = __webpack_require__(221);
 var Hourglass = __webpack_require__(532);
@@ -50020,6 +50021,7 @@ var Main = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 
     _this.state = {
+      map: 'OpenStreetMap.Mapnik',
       center: L.latLng(48.8, 19),
       zoom: 9,
       viewer: null,
@@ -50157,6 +50159,11 @@ var Main = function (_React$Component) {
       e.preventDefault();
     }
   }, {
+    key: 'handleMapChange',
+    value: function handleMapChange(map) {
+      this.setState({ map: map });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this5 = this;
@@ -50168,7 +50175,8 @@ var Main = function (_React$Component) {
           mode = _state.mode,
           fetching = _state.fetching,
           center = _state.center,
-          zoom = _state.zoom;
+          zoom = _state.zoom,
+          map = _state.map;
 
       var activePoi = pois.find(function (_ref7) {
         var id = _ref7.id;
@@ -50245,7 +50253,27 @@ var Main = function (_React$Component) {
                   onMove: this.handleMapMove.bind(this),
                   onClick: this.handleMapClick.bind(this),
                   onZoom: this.handleMapZoom.bind(this) },
-                React.createElement(TileLayer, { url: 'http://{s}.freemap.sk/T/{z}/{x}/{y}.png' }),
+                React.createElement(
+                  LayersControl,
+                  { position: 'topright' },
+                  React.createElement(
+                    LayersControl.BaseLayer,
+                    { name: 'OpenStreetMap.Mapnik', checked: map === 'OpenStreetMap.Mapnik' },
+                    React.createElement(TileLayer, {
+                      attribution: '\xA9 <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+                      url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+                      onAdd: this.handleMapChange.bind(this, 'OpenStreetMap.Mapnik')
+                    })
+                  ),
+                  React.createElement(
+                    LayersControl.BaseLayer,
+                    { name: 'Freemap.Hiking', checked: map === 'Freemap.Hiking' },
+                    React.createElement(TileLayer, { url: 'http://{s}.freemap.sk/T/{z}/{x}/{y}.png',
+                      attribution: 'visualization \xA9 Freemap Slovakia, data \xA9 OpenStreetMap contributors',
+                      maxZoom: '16', minZoom: '7',
+                      onAdd: this.handleMapChange.bind(this, 'Freemap.Hiking') })
+                  )
+                ),
                 viewer && React.createElement(Marker, { position: viewer, icon: placeIcon,
                   draggable: mode === 'move_poi',
                   onClick: this.handlePoiClick.bind(this, 'viewer'),

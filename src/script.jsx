@@ -1,6 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
-const { Map, TileLayer, Marker } = require('react-leaflet');
+const { Map, TileLayer, Marker, LayersControl } = require('react-leaflet');
 const Toposcope = require('./toposcope.jsx');
 const Hourglass = require('./hourglass.jsx');
 const createMarker = require('./markers.js');
@@ -23,6 +23,7 @@ class Main extends React.Component {
     super(props);
 
     this.state = {
+      map: 'OpenStreetMap.Mapnik',
       center: L.latLng(48.8, 19),
       zoom: 9,
       viewer: null,
@@ -120,8 +121,12 @@ class Main extends React.Component {
     e.preventDefault();
   }
 
+  handleMapChange(map) {
+    this.setState({ map });
+  }
+
   render() {
-    const { viewer, pois, activePoiId, mode, fetching, center, zoom } = this.state;
+    const { viewer, pois, activePoiId, mode, fetching, center, zoom, map } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
 
     return (
@@ -145,27 +150,43 @@ class Main extends React.Component {
         <div className="container">
           <div className="row">
             <div className="col-md-6">
-                <Map style={{ width: '100%', height: '500px' }} center={center} zoom={zoom}
-                    onMove={this.handleMapMove.bind(this)}
-                    onClick={this.handleMapClick.bind(this)}
-                    onZoom={this.handleMapZoom.bind(this)}>
-                  <TileLayer url="http://{s}.freemap.sk/T/{z}/{x}/{y}.png"/>
-                  {viewer &&
-                    <Marker position={viewer} icon={placeIcon}
-                      draggable={mode === 'move_poi'}
-                      onClick={this.handlePoiClick.bind(this, 'viewer')}
-                      onDrag={this.handlePoiDrag.bind(this, 'viewer')}
-                    />
-                  }
+              <Map style={{ width: '100%', height: '500px' }} center={center} zoom={zoom}
+                  onMove={this.handleMapMove.bind(this)}
+                  onClick={this.handleMapClick.bind(this)}
+                  onZoom={this.handleMapZoom.bind(this)}>
 
-                  {pois.map(({ id, lat, lng }) =>
-                    <Marker key={id} position={[ lat, lng ]}
-                      onClick={this.handlePoiClick.bind(this, id)}
-                      onDrag={this.handlePoiDrag.bind(this, id)}
-                      icon={id === activePoiId ? activePoiIcon : poiIcon}
-                      draggable={mode === 'move_poi'}/>
-                  )}
-                </Map>
+                <LayersControl position="topright">
+                  <LayersControl.BaseLayer name="OpenStreetMap.Mapnik" checked={map === 'OpenStreetMap.Mapnik'}>
+                    <TileLayer
+                      attribution='© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                      url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+                      onAdd={this.handleMapChange.bind(this, 'OpenStreetMap.Mapnik')}
+                    />
+                  </LayersControl.BaseLayer>
+                  <LayersControl.BaseLayer name="Freemap.Hiking" checked={map === 'Freemap.Hiking'}>
+                    <TileLayer url="http://{s}.freemap.sk/T/{z}/{x}/{y}.png"
+                      attribution="visualization © Freemap Slovakia, data © OpenStreetMap contributors"
+                      maxZoom="16" minZoom="7"
+                      onAdd={this.handleMapChange.bind(this, 'Freemap.Hiking')}/>
+                  </LayersControl.BaseLayer>
+                </LayersControl>
+
+                {viewer &&
+                  <Marker position={viewer} icon={placeIcon}
+                    draggable={mode === 'move_poi'}
+                    onClick={this.handlePoiClick.bind(this, 'viewer')}
+                    onDrag={this.handlePoiDrag.bind(this, 'viewer')}
+                  />
+                }
+
+                {pois.map(({ id, lat, lng }) =>
+                  <Marker key={id} position={[ lat, lng ]}
+                    onClick={this.handlePoiClick.bind(this, id)}
+                    onDrag={this.handlePoiDrag.bind(this, id)}
+                    icon={id === activePoiId ? activePoiIcon : poiIcon}
+                    draggable={mode === 'move_poi'}/>
+                )}
+              </Map>
             </div>
             <div className="col-md-6" ref="toposcope">
               {viewer && <Toposcope baseLat={viewer.lat} baseLng={viewer.lng} pois={pois}/>}
