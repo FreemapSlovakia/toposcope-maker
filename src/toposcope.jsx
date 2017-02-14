@@ -2,7 +2,7 @@ const React = require('react');
 
 module.exports = Toposcope;
 
-function Toposcope({ baseLat, baseLng, pois }) {
+function Toposcope({ baseLat, baseLng, pois, innerRadius = 15, outerRadius = 90 }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="-100 -100 200 200">
       <style>{`
@@ -22,7 +22,7 @@ function Toposcope({ baseLat, baseLng, pois }) {
       <defs>
         {pois.map(({ id, lat, lng }) => {
           const b = Math.PI + bearing(toRad(baseLat), toRad(baseLng), toRad(lat), toRad(lng));
-          return <path id={`p${id}`} key={id} d={`M ${Math.sin(b) * 15} ${Math.cos(b) * 15} L ${Math.sin(b) * 90} ${Math.cos(b) * 90}`}/>;
+          return <path id={`p${id}`} key={id} d={`M ${Math.sin(b) * innerRadius} ${Math.cos(b) * innerRadius} L ${Math.sin(b) * outerRadius} ${Math.cos(b) * outerRadius}`}/>;
         })}
       </defs>
 
@@ -38,8 +38,8 @@ function Toposcope({ baseLat, baseLng, pois }) {
         ))
       }
 
-      <circle cx="0" cy="0" r="90" className="line"/>
-      <circle cx="0" cy="0" r="15" className="line"/>
+      <circle cx="0" cy="0" r={outerRadius} className="line"/>
+      <circle cx="0" cy="0" r={innerRadius} className="line"/>
     </svg>
   );
 }
@@ -47,6 +47,8 @@ function Toposcope({ baseLat, baseLng, pois }) {
 Toposcope.propTypes = {
   baseLat: React.PropTypes.number.isRequired,
   baseLng: React.PropTypes.number.isRequired,
+  innerRadius: React.PropTypes.number,
+  outerRadius: React.PropTypes.number,
   pois: React.PropTypes.array.isRequired
 };
 
