@@ -2,6 +2,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const { Map, TileLayer, Marker } = require('react-leaflet');
 const Toposcope = require('./toposcope.jsx');
+const Hourglass = require('./hourglass.jsx');
 const createMarker = require('./markers.js');
 const loadPeaks = require('./poiLoader.js');
 const FileSaver = require('file-saver');
@@ -26,7 +27,8 @@ class Main extends React.Component {
       viewer: null,
       pois: [],
       mode: '',
-      activePoiId: null
+      activePoiId: null,
+      fetching: false
     };
 
     this.nextId = -1;
@@ -62,8 +64,11 @@ class Main extends React.Component {
       let radius = window.prompt('Radius in meters? Must be less than 20000.', 1000);
       radius = parseFloat(radius);
       if (radius > 0 && radius <= 20000) {
-        loadPeaks(lat, lng, radius).then(pois => this.setState({ activePoiId: null,
-          pois: [ ...this.state.pois.filter(({ id1 }) => pois.find(({ id2 }) => id1 !== id2) !== -1), ...pois ] }));
+        this.setState({ fetching: true });
+        loadPeaks(lat, lng, radius).then(pois => {
+          this.setState({ activePoiId: null,
+            pois: [ ...this.state.pois.filter(({ id1 }) => pois.find(({ id2 }) => id1 !== id2) !== -1), ...pois ] });
+        }).catch().then(() => this.setState({ fetching: false }));
       }
     } else {
       this.setState({ activePoiId: null, });
@@ -103,11 +108,11 @@ class Main extends React.Component {
 
   render() {
     const position = [48.8, 19];
-    const { viewer, pois, activePoiId, mode } = this.state;
+    const { viewer, pois, activePoiId, mode, fetching } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
 
     return (
-      <div>
+      <Hourglass active={fetching}>
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>Toposcope Maker</Navbar.Brand>
@@ -127,24 +132,24 @@ class Main extends React.Component {
         <div className="container">
           <div className="row">
             <div className="col-md-6">
-              <Map style={{ width: '100%', height: '500px' }} center={position} zoom={9} onMove={this.handleMapMove.bind(this)} onClick={this.handleMapClick.bind(this)}>
-                <TileLayer url="http://{s}.freemap.sk/T/{z}/{x}/{y}.png"/>
-                {viewer &&
-                  <Marker position={viewer} icon={placeIcon}
-                    draggable={mode === 'move_poi'}
-                    onClick={this.handlePoiClick.bind(this, 'viewer')}
-                    onDrag={this.handlePoiDrag.bind(this, 'viewer')}
-                  />
-                }
+                <Map style={{ width: '100%', height: '500px' }} center={position} zoom={9} onMove={this.handleMapMove.bind(this)} onClick={this.handleMapClick.bind(this)}>
+                  <TileLayer url="http://{s}.freemap.sk/T/{z}/{x}/{y}.png"/>
+                  {viewer &&
+                    <Marker position={viewer} icon={placeIcon}
+                      draggable={mode === 'move_poi'}
+                      onClick={this.handlePoiClick.bind(this, 'viewer')}
+                      onDrag={this.handlePoiDrag.bind(this, 'viewer')}
+                    />
+                  }
 
-                {pois.map(({ id, lat, lng }) =>
-                  <Marker key={id} position={[ lat, lng ]}
-                    onClick={this.handlePoiClick.bind(this, id)}
-                    onDrag={this.handlePoiDrag.bind(this, id)}
-                    icon={id === activePoiId ? activePoiIcon : poiIcon}
-                    draggable={mode === 'move_poi'}/>
-                )}
-              </Map>
+                  {pois.map(({ id, lat, lng }) =>
+                    <Marker key={id} position={[ lat, lng ]}
+                      onClick={this.handlePoiClick.bind(this, id)}
+                      onDrag={this.handlePoiDrag.bind(this, id)}
+                      icon={id === activePoiId ? activePoiIcon : poiIcon}
+                      draggable={mode === 'move_poi'}/>
+                  )}
+                </Map>
             </div>
             <div className="col-md-6" ref="toposcope">
               {viewer && <Toposcope baseLat={viewer.lat} baseLng={viewer.lng} pois={pois}/>}
@@ -152,20 +157,16 @@ class Main extends React.Component {
           </div>
           <div className="row">
             <div className="col-md-12">
-              <div className="btn-group">
-              </div>
-              {' '}
               {activePoi &&
                 <FormGroup>
                   <ControlLabel>Label</ControlLabel>
-                  <FormControl type="text" value={activePoi.text} onChange={this.handleTextChange.bind(this)}
-                    placeholder="Name, {d} km"/>
+                  <FormControl type="text" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder="Name, {d} km"/>
                 </FormGroup>
               }
             </div>
           </div>
         </div>
-      </div>
+      </Hourglass>
     );
   }
 }
