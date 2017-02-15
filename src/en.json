@@ -12,7 +12,5 @@
   "east": "E",
   "south": "S",
   "west": "W",
-  "north": "N",
-  "freemapAttributionHtml": "visualization © Freemap Slovakia, data © <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors",
-  "osmAttributionHtml": "© <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors"
+  "north": "N"
 }
