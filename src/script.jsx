@@ -40,6 +40,7 @@ class Main extends React.Component {
       activePoiId: null,
       fetching: false,
       language,
+      inscriptions: [ '', '{a}', '', '' ],
       messages: require(`./${language}.json`)
     };
 
@@ -53,6 +54,7 @@ class Main extends React.Component {
   componentDidUpdate() {
     const toSave = Object.assign({}, this.state);
     delete toSave.messages;
+    delete toSave.fetching;
     localStorage.setItem('toposcope', JSON.stringify(toSave));
   }
 
@@ -140,8 +142,14 @@ class Main extends React.Component {
     this.setState({ language, messages: require(`./${language}.json`) });
   }
 
+  handleCustomTextChange(i, e) {
+    const inscriptions = [ ...this.state.inscriptions ];
+    inscriptions[i] = e.target.value;
+    this.setState({ inscriptions });
+  }
+
   render() {
-    const { viewer, pois, activePoiId, mode, fetching, center, zoom, map, messages, language } = this.state;
+    const { viewer, pois, activePoiId, mode, fetching, center, zoom, map, messages, language, inscriptions } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
     const t = key => messages[key] || key;
 
@@ -204,11 +212,19 @@ class Main extends React.Component {
               </Map>
             </div>
             <div className="col-md-6" ref="toposcope">
-              {viewer && <Toposcope baseLat={viewer.lat} baseLng={viewer.lng} pois={pois} messages={messages}/>}
+              {viewer && <Toposcope baseLat={viewer.lat} baseLng={viewer.lng} pois={pois} messages={messages} inscriptions={inscriptions}/>}
             </div>
           </div>
           <div className="row">
-            <div className="col-md-12">
+            <div className="col-md-6">
+              {[ [ 'south', 'east' ], [ 'south', 'west' ], [ 'north', 'west' ], [ 'north', 'east' ] ].map(([ c1, c2 ], i) =>
+                <FormGroup key={i}>
+                  <ControlLabel>{t('inscription')} {t(c1)}–{t(c2)}</ControlLabel>
+                  <FormControl type="text" value={inscriptions[i]} onChange={this.handleCustomTextChange.bind(this, i)}/>
+                </FormGroup>
+              )}
+            </div>
+            <div className="col-md-6">
               {activePoi &&
                 <FormGroup>
                   <ControlLabel>{t('label')}</ControlLabel>

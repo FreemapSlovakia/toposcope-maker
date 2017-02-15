@@ -2,7 +2,7 @@ const React = require('react');
 
 module.exports = Toposcope;
 
-function Toposcope({ baseLat, baseLng, pois, innerRadius = 15, outerRadius = 90, messages }) {
+function Toposcope({ baseLat, baseLng, pois, innerRadius = 15, outerRadius = 90, messages, inscriptions }) {
   const t = key => messages[key] || key;
 
   return (
@@ -31,11 +31,14 @@ function Toposcope({ baseLat, baseLng, pois, innerRadius = 15, outerRadius = 90,
 
       <path id="outerCircle" d="M 99,0 A 99,99 0 0 1 0,99 99,99 0 0 1 -99,0 99,99 0 0 1 0,-99 99,99 0 0 1 99,0 Z" className="line"/>
 
-      <text dy="5.5" className="lineText">
-        <textPath xlinkHref="#outerCircle" startOffset="37.5%" textAnchor="middle">{t('osmAttribution')}</textPath>
-      </text>
+      {inscriptions.map((inscription, i) =>
+        <text dy="6.0" className="lineText" key={i}>
+          <textPath xlinkHref="#outerCircle" startOffset={i * 25 + 12.5 + '%'} textAnchor="middle">{inscription.replace('{a}', t('osmAttribution'))}</textPath>
+        </text>
+      )}
+
       {[ t('east'), t('south'), t('west'), t('north') ].map((x, i) =>
-        <text key={i} dy="5.5" className="lineText">
+        <text key={i} dy="6" className="lineText">
           <textPath xlinkHref="#outerCircle" startOffset={`${i * 25}%`} textAnchor="middle">{x}</textPath>
         </text>
       )}
@@ -65,6 +68,7 @@ Toposcope.propTypes = {
   baseLng: React.PropTypes.number.isRequired,
   innerRadius: React.PropTypes.number,
   outerRadius: React.PropTypes.number,
+  inscriptions: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   messages: React.PropTypes.object.isRequired,
   pois: React.PropTypes.array.isRequired
 };

@@ -12,5 +12,6 @@
   "east": "V",
   "south": "J",
   "west": "Z",
-  "north": "S"
+  "north": "S",
+  "inscription": "Vlastný text"
 }

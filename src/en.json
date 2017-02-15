@@ -12,5 +12,6 @@
   "east": "E",
   "south": "S",
   "west": "W",
-  "north": "N"
+  "north": "N",
+  "inscription": "Inscription"
 }
