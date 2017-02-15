@@ -113,7 +113,7 @@ class Main extends React.Component {
   }
 
   handleSave() {
-    FileSaver.saveAs(new Blob([ this.refs.toposcope.innerHTML ], { type: 'image/svg+xml' }), 'topograph.svg');
+    FileSaver.saveAs(new Blob([ this.refs.toposcope.innerHTML ], { type: 'image/svg+xml' }), 'toposcope.svg');
   }
 
   handleSetMode(mode, e) {
