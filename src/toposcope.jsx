@@ -21,8 +21,6 @@ function Toposcope({ baseLat, baseLng, pois, innerRadius = 15, outerRadius = 90 
       `}</style>
 
       <defs>
-
-
         {pois.map(({ id, lat, lng }) => {
           const b = Math.PI + bearing(toRad(baseLat), toRad(baseLng), toRad(lat), toRad(lng));
           return <path id={`p${id}`} key={id} d={`M ${Math.sin(b) * innerRadius} ${Math.cos(b) * innerRadius} L ${Math.sin(b) * outerRadius} ${Math.cos(b) * outerRadius}`}/>;
