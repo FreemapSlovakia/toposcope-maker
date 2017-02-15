@@ -2,7 +2,9 @@ const React = require('react');
 
 module.exports = Toposcope;
 
-function Toposcope({ baseLat, baseLng, pois, innerRadius = 15, outerRadius = 90 }) {
+function Toposcope({ baseLat, baseLng, pois, innerRadius = 15, outerRadius = 90, messages }) {
+  const t = key => messages[key] || key;
+
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="-100 -100 200 200">
       <style>{`
@@ -30,10 +32,10 @@ function Toposcope({ baseLat, baseLng, pois, innerRadius = 15, outerRadius = 90 
       <path id="outerCircle" d="M 99,0 A 99,99 0 0 1 0,99 99,99 0 0 1 -99,0 99,99 0 0 1 0,-99 99,99 0 0 1 99,0 Z" className="line"/>
 
       <text dy="5.5" className="lineText">
-        <textPath xlinkHref="#outerCircle" startOffset="37.5%" textAnchor="middle">© OpenStreetMap contributors</textPath>
+        <textPath xlinkHref="#outerCircle" startOffset="37.5%" textAnchor="middle">{t('osmAttribution')}</textPath>
       </text>
-      {[ 'E', 'S', 'W', 'N' ].map((x, i) =>
-        <text key={x} dy="5.5" className="lineText">
+      {[ t('east'), t('south'), t('west'), t('north') ].map((x, i) =>
+        <text key={i} dy="5.5" className="lineText">
           <textPath xlinkHref="#outerCircle" startOffset={`${i * 25}%`} textAnchor="middle">{x}</textPath>
         </text>
       )}
@@ -63,6 +65,7 @@ Toposcope.propTypes = {
   baseLng: React.PropTypes.number.isRequired,
   innerRadius: React.PropTypes.number,
   outerRadius: React.PropTypes.number,
+  messages: React.PropTypes.object.isRequired,
   pois: React.PropTypes.array.isRequired
 };
 

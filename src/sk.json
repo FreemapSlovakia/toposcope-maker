@@ -1,0 +1,18 @@
+{
+  "placeObserver": "Zadávanie pozorovateľa",
+  "loadPeaks": "Načítavanie vrcholov",
+  "addPoi": "Pridávanie POI",
+  "move": "Posun",
+  "delete": "Mazanie",
+  "language": "Jazyk",
+  "saveToposcope": "Ulož obrázok",
+  "label": "Text",
+  "labelPlaceholder": "Názov, {d} km",
+  "osmAttribution": "© prispievatelia OpenStreetMap",
+  "east": "V",
+  "south": "J",
+  "west": "Z",
+  "north": "S",
+  "freemapAttributionHtml": "vizualizácia © Freemap Slovakia, dáta © prispievatelia <a href=\"http://osm.org/copyright\">OpenStreetMap</a>",
+  "osmAttributionHtml": "© prispievatelia <a href=\"http://osm.org/copyright\">OpenStreetMap</a>"
+}

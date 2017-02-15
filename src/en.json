@@ -1,0 +1,18 @@
+{
+  "placeObserver": "Place Observer",
+  "loadPeaks": "Load Peaks",
+  "addPoi": "Add POI",
+  "move": "Move",
+  "delete": "Delete",
+  "language": "Language",
+  "saveToposcope": "Save Image",
+  "label": "Label",
+  "labelPlaceholder": "Name, {d} km",
+  "osmAttribution": "© OpenStreetMap contributors",
+  "east": "E",
+  "south": "S",
+  "west": "W",
+  "north": "N",
+  "freemapAttributionHtml": "visualization © Freemap Slovakia, data © <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors",
+  "osmAttributionHtml": "© <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors"
+}

@@ -12,17 +12,23 @@ const NavItem = require('react-bootstrap/lib/NavItem');
 const FormGroup = require('react-bootstrap/lib/FormGroup');
 const ControlLabel = require('react-bootstrap/lib/ControlLabel');
 const FormControl = require('react-bootstrap/lib/FormControl');
+const NavDropdown = require('react-bootstrap/lib/NavDropdown');
+const MenuItem = require('react-bootstrap/lib/MenuItem');
 
 const poiIcon = createMarker('#ddf');
 const placeIcon = createMarker('red');
 const activePoiIcon = createMarker('#66f');
 
-const maps = require('./mapDefinitions');
+const mapDefinitions = require('./mapDefinitions');
 
 class Main extends React.Component {
 
   constructor(props) {
     super(props);
+
+    const toposcope = JSON.parse(localStorage.getItem('toposcope'));
+    const language = toposcope && toposcope.language ||
+      navigator.languages.map(language => language.split('-')[0]).find(language => language === 'en' || language === 'sk')
 
     this.state = {
       map: 'OpenStreetMap Mapnik',
@@ -32,19 +38,22 @@ class Main extends React.Component {
       pois: [],
       mode: '',
       activePoiId: null,
-      fetching: false
+      fetching: false,
+      language,
+      messages: require(`./${language}.json`)
     };
 
-    const toposcope = localStorage.getItem('toposcope');
     if (toposcope) {
-      Object.assign(this.state, JSON.parse(toposcope));
+      Object.assign(this.state, toposcope);
     }
 
     this.nextId = this.state.pois.reduce((a, { id }) => Math.min(a, id), 0) - 1;
   }
 
   componentDidUpdate() {
-    localStorage.setItem('toposcope', JSON.stringify(this.state));
+    const toSave = Object.assign({}, this.state);
+    delete toSave.messages;
+    localStorage.setItem('toposcope', JSON.stringify(toSave));
   }
 
   handleMapMove(e) {
@@ -127,9 +136,14 @@ class Main extends React.Component {
     this.setState({ map });
   }
 
+  handleSetLanguage(language) {
+    this.setState({ language, messages: require(`./${language}.json`) });
+  }
+
   render() {
-    const { viewer, pois, activePoiId, mode, fetching, center, zoom, map } = this.state;
+    const { viewer, pois, activePoiId, mode, fetching, center, zoom, map, messages, language } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
+    const t = key => messages[key] || key;
 
     return (
       <Hourglass active={fetching}>
@@ -140,12 +154,16 @@ class Main extends React.Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <NavItem active={mode === 'set_viewer'} onClick={this.handleSetMode.bind(this, 'set_viewer')}>Place Observer</NavItem>
-              <NavItem active={mode === 'load_peaks'} onClick={this.handleSetMode.bind(this, 'load_peaks')}>Load Peaks</NavItem>
-              <NavItem active={mode === 'add_poi'} onClick={this.handleSetMode.bind(this, 'add_poi')}>Add POI</NavItem>
-              <NavItem active={mode === 'move_poi'} onClick={this.handleSetMode.bind(this, 'move_poi')}>Move</NavItem>
-              <NavItem active={mode === 'delete_poi'} onClick={this.handleSetMode.bind(this, 'delete_poi')}>Delete</NavItem>
-              <NavItem onClick={this.handleSave.bind(this)} disabled={!viewer}>Save Toposcope</NavItem>
+              <NavItem active={mode === 'set_viewer'} onClick={this.handleSetMode.bind(this, 'set_viewer')}>{t('placeObserver')}</NavItem>
+              <NavItem active={mode === 'load_peaks'} onClick={this.handleSetMode.bind(this, 'load_peaks')}>{t('loadPeaks')}</NavItem>
+              <NavItem active={mode === 'add_poi'} onClick={this.handleSetMode.bind(this, 'add_poi')}>{t('addPoi')}</NavItem>
+              <NavItem active={mode === 'move_poi'} onClick={this.handleSetMode.bind(this, 'move_poi')}>{t('move')}</NavItem>
+              <NavItem active={mode === 'delete_poi'} onClick={this.handleSetMode.bind(this, 'delete_poi')}>{t('delete')}</NavItem>
+              <NavItem onClick={this.handleSave.bind(this)} disabled={!viewer}>{t('saveToposcope')}</NavItem>
+              <NavDropdown title={t('language')} id="basic-nav-dropdown">
+                <MenuItem onClick={this.handleSetLanguage.bind(this, 'en')}>English{language === 'en' ? ' ✓' : ''}</MenuItem>
+                <MenuItem onClick={this.handleSetLanguage.bind(this, 'sk')}>Slovensky{language === 'sk' ? ' ✓' : ''}</MenuItem>
+              </NavDropdown>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
@@ -159,8 +177,8 @@ class Main extends React.Component {
 
                 <LayersControl position="topright">
                   {
-                    maps.map(({ name, url, attribution, maxZoom, minZoom }) =>
-                      <LayersControl.BaseLayer k={name} name={name} checked={map === name}>
+                    mapDefinitions.map(({ name, url, attribution, maxZoom, minZoom }) =>
+                      <LayersControl.BaseLayer key={name} name={name} checked={map === name}>
                         <TileLayer attribution={attribution} url={url} onAdd={this.handleMapChange.bind(this, name)}
                           maxZoom={maxZoom} minZoom={minZoom}/>
                       </LayersControl.BaseLayer>
@@ -186,15 +204,15 @@ class Main extends React.Component {
               </Map>
             </div>
             <div className="col-md-6" ref="toposcope">
-              {viewer && <Toposcope baseLat={viewer.lat} baseLng={viewer.lng} pois={pois}/>}
+              {viewer && <Toposcope baseLat={viewer.lat} baseLng={viewer.lng} pois={pois} messages={messages}/>}
             </div>
           </div>
           <div className="row">
             <div className="col-md-12">
               {activePoi &&
                 <FormGroup>
-                  <ControlLabel>Label</ControlLabel>
-                  <FormControl type="text" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder="Name, {d} km"/>
+                  <ControlLabel>{t('label')}</ControlLabel>
+                  <FormControl type="text" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder={t('labelPlaceholder')}/>
                 </FormGroup>
               }
             </div>
