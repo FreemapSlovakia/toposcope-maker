@@ -17,13 +17,15 @@ const poiIcon = createMarker('#ddf');
 const placeIcon = createMarker('red');
 const activePoiIcon = createMarker('#66f');
 
+const maps = require('./mapDefinitions');
+
 class Main extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      map: 'OpenStreetMap.Mapnik',
+      map: 'OpenStreetMap Mapnik',
       center: L.latLng(48.8, 19),
       zoom: 9,
       viewer: null,
@@ -156,19 +158,14 @@ class Main extends React.Component {
                   onZoom={this.handleMapZoom.bind(this)}>
 
                 <LayersControl position="topright">
-                  <LayersControl.BaseLayer name="OpenStreetMap.Mapnik" checked={map === 'OpenStreetMap.Mapnik'}>
-                    <TileLayer
-                      attribution='© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                      url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
-                      onAdd={this.handleMapChange.bind(this, 'OpenStreetMap.Mapnik')}
-                    />
-                  </LayersControl.BaseLayer>
-                  <LayersControl.BaseLayer name="Freemap.Hiking" checked={map === 'Freemap.Hiking'}>
-                    <TileLayer url="http://{s}.freemap.sk/T/{z}/{x}/{y}.png"
-                      attribution="visualization © Freemap Slovakia, data © OpenStreetMap contributors"
-                      maxZoom="16" minZoom="7"
-                      onAdd={this.handleMapChange.bind(this, 'Freemap.Hiking')}/>
-                  </LayersControl.BaseLayer>
+                  {
+                    maps.map(({ name, url, attribution, maxZoom, minZoom }) =>
+                      <LayersControl.BaseLayer k={name} name={name} checked={map === name}>
+                        <TileLayer attribution={attribution} url={url} onAdd={this.handleMapChange.bind(this, name)}
+                          maxZoom={maxZoom} minZoom={minZoom}/>
+                      </LayersControl.BaseLayer>
+                    )
+                  }
                 </LayersControl>
 
                 {viewer &&
