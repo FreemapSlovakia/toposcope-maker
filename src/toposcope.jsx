@@ -14,36 +14,41 @@ function Toposcope({ baseLat, baseLng, pois, innerRadius = 15, outerRadius = 90 
         }
 
         .lineText {
+          font-family: Arial;
           font-size: 3.5px;
           text-anchor: end;
         }
       `}</style>
 
       <defs>
-        <path id="cc" d="M 0 98 a 98 98 0 1 1 0.1 0 z"/>
+
+
         {pois.map(({ id, lat, lng }) => {
           const b = Math.PI + bearing(toRad(baseLat), toRad(baseLng), toRad(lat), toRad(lng));
           return <path id={`p${id}`} key={id} d={`M ${Math.sin(b) * innerRadius} ${Math.cos(b) * innerRadius} L ${Math.sin(b) * outerRadius} ${Math.cos(b) * outerRadius}`}/>;
         })}
       </defs>
 
-      <use xlinkHref="#cc" className="line"/>
+      <path id="outerCircle" d="M 99,0 A 99,99 0 0 1 0,99 99,99 0 0 1 -99,0 99,99 0 0 1 0,-99 99,99 0 0 1 99,0 Z" className="line"/>
 
-      <text x="0" y="0" dy="5.5" className="lineText">
-        <textPath xlinkHref="#cc" startOffset="37.5%" textAnchor="middle">© OpenStreetMap contributors</textPath>
-        <textPath xlinkHref="#cc" startOffset="0%" textAnchor="middle">S</textPath>
-        <textPath xlinkHref="#cc" startOffset="25%" textAnchor="middle">W</textPath>
-        <textPath xlinkHref="#cc" startOffset="50%" textAnchor="middle">N</textPath>
-        <textPath xlinkHref="#cc" startOffset="75%" textAnchor="middle">E</textPath>
+      <text dy="5.5" className="lineText">
+        <textPath xlinkHref="#outerCircle" startOffset="37.5%" textAnchor="middle">© OpenStreetMap contributors</textPath>
       </text>
+      {[ 'E', 'S', 'W', 'N' ].map((x, i) =>
+        <text key={x} dy="5.5" className="lineText">
+          <textPath xlinkHref="#outerCircle" startOffset={`${i * 25}%`} textAnchor="middle">{x}</textPath>
+        </text>
+      )}
 
       {pois.map(({ id }) => <use key={id} xlinkHref={`#p${id}`} className="line"/>)}
 
       {
         pois.map(({ id, lat, lng, text }) => (
-          <text key={id} x="-3" y="100" dy="-2" className="lineText">
+          <text key={id} className="lineText">
             <textPath xlinkHref={`#p${id}`} startOffset="100%">
-              {text.replace('{d}', Math.round(L.latLng(lat, lng).distanceTo(L.latLng(baseLat, baseLng)) / 100) / 10)}
+              <tspan dy="-2" xmlSpace="preserve">
+                {text.replace('{d}', Math.round(L.latLng(lat, lng).distanceTo(L.latLng(baseLat, baseLng)) / 100) / 10) + '   '}
+              </tspan>
             </textPath>
           </text>
         ))
