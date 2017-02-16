@@ -19,6 +19,7 @@
   "help": "Help",
   "close": "Close",
   "helpText": [
+    "<p>This is a tool for creating <a href='https://en.wikipedia.org/wiki/Toposcope' target='_blank'>toposcopes</a>. You can find the project at <a href='https://github.com/FreemapSlovakia/toposcope-maker' target='_blank'>GitHub</a>.</p>",
     "<p>Functions:<ul>",
     "<li><u>Add POI</u> - clicking the map will add new point to that location</li>",
     "<li><u>Load peaks</u> - clickig the map set the position around which sould be peaks from OpenStreetMap database downloaded</li>",
