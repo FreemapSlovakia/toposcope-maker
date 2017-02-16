@@ -9,7 +9,7 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
   const nf = typeof Intl !== 'undefined' ? new Intl.NumberFormat(language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : null;
 
   function formatDistance(d) {
-    return nf ? nf.format(d) : (Math.round(d / 100) / 10);
+    return nf ? nf.format(d / 1000) : (Math.round(d / 100) / 10);
   }
 
   const innerTexts = [
@@ -19,11 +19,11 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
   ].filter(line => line.trim().length);
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="-100 -100 200 200">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">
       <style>{`
         .line {
           stroke: #000000;
-          stroke-width: 0.3px;
+          stroke-width: 0.3;
           stroke-linecap: round;
           fill: none;
         }
