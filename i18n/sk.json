@@ -1,4 +1,5 @@
 {
+  "innerCircleRadius": "Polomer vnútornej kružnice",
   "observer": "Pozorovateľ",
   "loadPeaks": "Načítavanie vrcholov",
   "addPoi": "Pridávanie POI",
@@ -25,6 +26,7 @@
     "<li><u>Mazanie</u> - kliknutím na bod v mape ho zmaže</li>",
     "<li><u>Ulož obrázok</u> - ponukne stiahnúť obrázok výhľadovej ružice do SVG súboru</li>",
     "</ul></p><p>Vlastnosti bodu:<ul>",
+    "<li><u>Polomer vnútornej kružnice</u> - polomer vnútornej kružnice vo výhľadovej ružici</li>",
     "<li><u>Text</u> - popis bodu; <mark>{d}</mark> v texte sa nahradí vzdialenosťou bodu od pozorovateľa v km</li>",
     "<li><u>Pozorovateľ</u> - určuje bod z ktorého sa pozoruje (kde je umiestnená výhľadova ružica)</li>",
     "</ul></p>"

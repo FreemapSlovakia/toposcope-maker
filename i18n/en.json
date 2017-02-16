@@ -1,4 +1,5 @@
 {
+  "innerCircleRadius": "Inner circle radius",
   "observer": "Observer",
   "loadPeaks": "Load Peaks",
   "addPoi": "Add POI",
@@ -25,6 +26,7 @@
     "<li><u>Delete</u> - clicking the point will remove it</li>",
     "<li><u>Save image</u> - offers to download toposcope image as SVG</li>",
     "</ul></p><p>Point properties:<ul>",
+    "<li><u>Inner circle radius</u> - radius of the inner circle in the toposcope</li>",
     "<li><u>Label</u> - point label; <mark>{d}</mark> in the text will be replaced by distance of the point from the observer in km</li>",
     "<li><u>Observer</u> - specifies if the point is that from which the observation is done (where the toposcope is placed)</li>",
     "</ul></p>"

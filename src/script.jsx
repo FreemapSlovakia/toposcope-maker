@@ -46,7 +46,8 @@ class Main extends React.Component {
       language,
       inscriptions: [ '', '{a}', '', '' ],
       messages: readMessages(language),
-      showHelp: false
+      showHelp: false,
+      innerCircleRadius: 25
     };
 
     if (toposcope) {
@@ -160,11 +161,16 @@ class Main extends React.Component {
     ] });
   }
 
+  handleInnerCircleRadiusChange(e) {
+    this.setState({ innerCircleRadius: e.target.value });
+  }
+
   render() {
-    const { pois, activePoiId, mode, fetching, center, zoom, map, messages, language, inscriptions, showHelp } = this.state;
+    const { pois, activePoiId, mode, fetching, center, zoom, map, messages, language, inscriptions, showHelp, innerCircleRadius } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
     const observerPoi = pois.find(({ observer }) => observer);
     const t = key => messages[key] || key;
+    const icr = parseFloat(innerCircleRadius);
 
     return (
       <Hourglass active={fetching}>
@@ -219,11 +225,12 @@ class Main extends React.Component {
               </Map>
             </div>
             <div className="col-md-6" ref="toposcope">
-              {observerPoi && <Toposcope pois={pois} messages={messages} inscriptions={inscriptions}/>}
+              {observerPoi && <Toposcope pois={pois} messages={messages} inscriptions={inscriptions}
+                innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25}/>}
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-4">
               {[ [ 'south', 'east' ], [ 'south', 'west' ], [ 'north', 'west' ], [ 'north', 'east' ] ].map(([ c1, c2 ], i) =>
                 <FormGroup key={i}>
                   <ControlLabel>{t('inscription')} {t(c1)}–{t(c2)}</ControlLabel>
@@ -231,7 +238,13 @@ class Main extends React.Component {
                 </FormGroup>
               )}
             </div>
-            <div className="col-md-6">
+            <div className="col-md-4">
+              <FormGroup>
+                <ControlLabel>{t('innerCircleRadius')}</ControlLabel>
+                <FormControl type="number" min="0" max="80" value={innerCircleRadius} onChange={this.handleInnerCircleRadiusChange.bind(this)}/>
+              </FormGroup>
+            </div>
+            <div className="col-md-4">
               {activePoi &&
                 <div>
                   <FormGroup>
