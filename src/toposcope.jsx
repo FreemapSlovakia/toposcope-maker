@@ -12,6 +12,12 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
     return nf ? nf.format(d) : (Math.round(d / 100) / 10);
   }
 
+  const innerTexts = [
+    ...observerPoi.text.trim().split('\n'),
+    (observerPoi.lat > 0 ? 'N' : 'S') + ' ' + formatGpsCoord(Math.abs(observerPoi.lat)),
+    (observerPoi.lng < 0 ? 'W' : 'E') + ' ' + formatGpsCoord(Math.abs(observerPoi.lng))
+  ].filter(line => line.trim().length);
+
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="-100 -100 200 200">
       <style>{`
@@ -53,24 +59,28 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
       {poisAround.map(({ id }) => <use key={id} xlinkHref={`#p${id}`} className="line"/>)}
 
       {
-        poisAround.map(({ id, lat, lng, text }) => (
-          <text key={id} className="lineText">
-            <textPath xlinkHref={`#p${id}`} startOffset="100%">
-              <tspan dy="-2" xmlSpace="preserve">
-                {text.replace('{d}', formatDistance(L.latLng(lat, lng).distanceTo(L.latLng(observerPoi.lat, observerPoi.lng)))) + '   '}
-              </tspan>
-            </textPath>
-          </text>
-        ))
+        poisAround.map(({ id, lat, lng, text }) => {
+          const lines = text.replace('{d}', formatDistance(L.latLng(lat, lng).distanceTo(L.latLng(observerPoi.lat, observerPoi.lng)))).split('\n');
+          return [
+            <text key={'x' + id} className="lineText">
+              <textPath xlinkHref={`#p${id}`} startOffset="100%">
+                <tspan x="0" dy="-0.5em" xmlSpace="preserve">{lines[0]}    </tspan>
+              </textPath>
+            </text>,
+            lines[1] ? <text key={id} className="lineText">
+              <textPath xlinkHref={`#p${id}`} startOffset="100%">
+                <tspan x="0" dy="1.5em" xmlSpace="preserve">{lines[1]}    </tspan>
+              </textPath>
+            </text> : undefined
+          ];
+        })
       }
 
       <circle cx="0" cy="0" r={outerRadius} className="line"/>
       <circle cx="0" cy="0" r={innerRadius} className="line"/>
 
-      <text x="0" y={observerPoi.text ? '-3.5em' : '-2.5em'} className="lineText">
-        {observerPoi.text && <tspan textAnchor="middle" x="0" dy="2em">{observerPoi.text}</tspan>}
-        <tspan textAnchor="middle" x="0" dy="2em">{(observerPoi.lat > 0 ? 'N' : 'S') + ' ' + formatGpsCoord(Math.abs(observerPoi.lat))}</tspan>
-        <tspan textAnchor="middle" x="0" dy="2em">{(observerPoi.lng < 0 ? 'W' : 'E') + ' ' + formatGpsCoord(Math.abs(observerPoi.lng))}</tspan>
+      <text x="0" y={-innerTexts.length - 0.5 + 'em'} className="lineText">
+        {innerTexts.map((line, i) => <tspan key={i} textAnchor="middle" x="0" dy="2em">{line}</tspan>)}
       </text>
     </svg>
   );

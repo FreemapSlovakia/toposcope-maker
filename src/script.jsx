@@ -259,7 +259,7 @@ class Main extends React.Component {
                 <div>
                   <FormGroup>
                     <ControlLabel>{t('label')}</ControlLabel>
-                    <FormControl type="text" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder={t('labelPlaceholder')}/>
+                    <FormControl componentClass="textarea" rows="2" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder={t('labelPlaceholder')}/>
                   </FormGroup>
                   <FormGroup>
                     <ControlLabel>{t('observer')}</ControlLabel>

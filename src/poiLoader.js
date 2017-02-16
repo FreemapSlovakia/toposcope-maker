@@ -10,7 +10,8 @@
   return fetch('https://overpass-api.de/api/interpreter', {
     method: 'POST',
     body: 'data=' + encodeURIComponent(query)
-  }).then(res => res.json()).then(data => {
-    return data.elements.map(({ id, lat, lon, tags: { name, ele } }) => ({ id, lat, lng: lon, text: `${name || '???'} ${formatEle(ele) || '???'} m, {d} km`, observer: false }));
-  });
+  }).then(res => res.json()).then(data =>
+    data.elements.map(({ id, lat, lon, tags: { name, ele } }) =>
+      ({ id, lat, lng: lon, text: `${name || '???'} (${formatEle(ele) || '???'} m)\n{d} km`, observer: false }))
+  );
 }
