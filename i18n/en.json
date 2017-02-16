@@ -1,5 +1,5 @@
 {
-  "placeObserver": "Place Observer",
+  "observer": "Observer",
   "loadPeaks": "Load Peaks",
   "addPoi": "Add POI",
   "move": "Move",
@@ -18,13 +18,15 @@
   "close": "Close",
   "loadPeaksPrompt": "Enter max distance in meters less than 20000.",
   "helpText": [
-    "<p>Functions:<dl>",
-    "<li>Place Observer - clicking the map set the position of the toposcope location</li>",
-    "<li>Load peaks - clickig the map set the position around which sould be peaks from OpenStreetMap database downloaded</li>",
+    "<p>Functions:<ul>",
     "<li>Add POI - clicking the map will add new point to that location</li>",
+    "<li>Load peaks - clickig the map set the position around which sould be peaks from OpenStreetMap database downloaded</li>",
     "<li>Move - enables dragging the points in the map</li>",
     "<li>Delete - clicking the point will remove it</li>",
-    "<li>Ulož obrázok - ponukne stiahnúť obrázok výhľadovej ružice do SVG súboru</li>",
-    "</dl></p>"
+    "<li>Save image - offers to download toposcope image as SVG</li>",
+    "</ul></p><p>Point properties:<ul>",
+    "<li>Label - point label; <code>{d}</code> in the text will be replaced by distance of the point from the observer in km</li>",
+    "<li>Observer - specifies if the point is that from which the observation is done (where the toposcope is placed)</li>",
+    "</ul></p>"
   ]
 }

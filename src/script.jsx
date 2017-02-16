@@ -15,19 +15,23 @@ const ControlLabel = require('react-bootstrap/lib/ControlLabel');
 const FormControl = require('react-bootstrap/lib/FormControl');
 const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 const MenuItem = require('react-bootstrap/lib/MenuItem');
+const Checkbox = require('react-bootstrap/lib/Checkbox');
 
 const poiIcon = createMarker('#ddf');
-const placeIcon = createMarker('red');
+const observerIcon = createMarker('#f88');
+const activeObserverIcon = createMarker('#f00');
 const activePoiIcon = createMarker('#66f');
 
 const mapDefinitions = require('./mapDefinitions');
+
+const localStorageName = 'toposcope1';
 
 class Main extends React.Component {
 
   constructor(props) {
     super(props);
 
-    const toposcope = JSON.parse(localStorage.getItem('toposcope'));
+    const toposcope = JSON.parse(localStorage.getItem(localStorageName));
     const language = toposcope && toposcope.language ||
       navigator.languages.map(language => language.split('-')[0]).find(language => language === 'en' || language === 'sk')
 
@@ -35,7 +39,6 @@ class Main extends React.Component {
       map: 'OpenStreetMap Mapnik',
       center: L.latLng(48.8, 19),
       zoom: 9,
-      viewer: null,
       pois: [],
       mode: '',
       activePoiId: null,
@@ -58,7 +61,7 @@ class Main extends React.Component {
     delete toSave.messages;
     delete toSave.fetching;
     delete toSave.showHelp;
-    localStorage.setItem('toposcope', JSON.stringify(toSave));
+    localStorage.setItem(localStorageName, JSON.stringify(toSave));
   }
 
   handleMapMove(e) {
@@ -70,11 +73,7 @@ class Main extends React.Component {
   }
 
   handlePoiClick(poiId) {
-    if (poiId === 'viewer') {
-      if (this.state.mode === 'delete_poi') {
-        this.setState({ viewer: null });
-      }
-    } else if (this.state.mode === 'delete_poi') {
+    if (this.state.mode === 'delete_poi') {
       this.setState({ activePoiId: null, pois: [ ...this.state.pois.filter(({ id }) => id !== poiId) ] });
     } else {
       this.setState({ activePoiId: poiId });
@@ -85,11 +84,9 @@ class Main extends React.Component {
     if (this.state.mode === 'add_poi') {
       this.setState({
         activePoiId: this.nextId,
-        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId } ]
+        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId, observer: false } ]
       });
       this.nextId--;
-    } else if (this.state.mode === 'set_viewer') {
-      this.setState({ viewer: e.latlng, activePoiId: null });
     } else if (this.state.mode === 'load_peaks') {
       const { lat, lng } = e.latlng;
       let radius = window.prompt(this.state.messages['loadPeaksPrompt'], 1000);
@@ -117,15 +114,11 @@ class Main extends React.Component {
   }
 
   handlePoiDrag(poiId, e) {
-    if (poiId === 'viewer') {
-      this.setState({ viewer: e.latlng });
-    } else {
-      const activePoi = this.state.pois.find(({ id }) => id === poiId);
-      this.setState({ pois: [
-        ...this.state.pois.filter(poi => poi !== activePoi),
-        Object.assign({}, activePoi, { lat: e.latlng.lat, lng: e.latlng.lng })
-      ] });
-    }
+    const activePoi = this.state.pois.find(({ id }) => id === poiId);
+    this.setState({ pois: [
+      ...this.state.pois.filter(poi => poi !== activePoi),
+      Object.assign({}, activePoi, { lat: e.latlng.lat, lng: e.latlng.lng })
+    ] });
   }
 
   handleSave() {
@@ -159,9 +152,18 @@ class Main extends React.Component {
     this.setState({ showHelp: false });
   }
 
+  handleObserverChange() {
+    const activePoi = this.state.pois.find(({ id }) => id === this.state.activePoiId);
+    this.setState({ pois: [
+      ...this.state.pois.filter(poi => poi !== activePoi).map(poi => Object.assign({}, poi, { observer: false })),
+      Object.assign({}, activePoi, { observer: !activePoi.observer })
+    ] });
+  }
+
   render() {
-    const { viewer, pois, activePoiId, mode, fetching, center, zoom, map, messages, language, inscriptions, showHelp } = this.state;
+    const { pois, activePoiId, mode, fetching, center, zoom, map, messages, language, inscriptions, showHelp } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
+    const observerPoi = pois.find(({ observer }) => observer);
     const t = key => messages[key] || key;
 
     return (
@@ -175,12 +177,11 @@ class Main extends React.Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <NavItem active={mode === 'set_viewer'} onClick={this.handleSetMode.bind(this, 'set_viewer')}>{t('placeObserver')}</NavItem>
-              <NavItem active={mode === 'load_peaks'} onClick={this.handleSetMode.bind(this, 'load_peaks')}>{t('loadPeaks')}</NavItem>
               <NavItem active={mode === 'add_poi'} onClick={this.handleSetMode.bind(this, 'add_poi')}>{t('addPoi')}</NavItem>
+              <NavItem active={mode === 'load_peaks'} onClick={this.handleSetMode.bind(this, 'load_peaks')}>{t('loadPeaks')}</NavItem>
               <NavItem active={mode === 'move_poi'} onClick={this.handleSetMode.bind(this, 'move_poi')}>{t('move')}</NavItem>
               <NavItem active={mode === 'delete_poi'} onClick={this.handleSetMode.bind(this, 'delete_poi')}>{t('delete')}</NavItem>
-              <NavItem onClick={this.handleSave.bind(this)} disabled={!viewer}>{t('saveToposcope')}</NavItem>
+              <NavItem onClick={this.handleSave.bind(this)} disabled={!observerPoi}>{t('saveToposcope')}</NavItem>
               <NavItem onClick={this.handleShowHelp.bind(this)}>{t('help')}</NavItem>
               <NavDropdown title={t('language')} id="basic-nav-dropdown">
                 <MenuItem onClick={this.handleSetLanguage.bind(this, 'en')}>English{language === 'en' ? ' ✓' : ''}</MenuItem>
@@ -208,25 +209,17 @@ class Main extends React.Component {
                   }
                 </LayersControl>
 
-                {viewer &&
-                  <Marker position={viewer} icon={placeIcon}
-                    draggable={mode === 'move_poi'}
-                    onClick={this.handlePoiClick.bind(this, 'viewer')}
-                    onDrag={this.handlePoiDrag.bind(this, 'viewer')}
-                  />
-                }
-
-                {pois.map(({ id, lat, lng }) =>
+                {pois.map(({ id, lat, lng, observer }) =>
                   <Marker key={id} position={[ lat, lng ]}
                     onClick={this.handlePoiClick.bind(this, id)}
                     onDrag={this.handlePoiDrag.bind(this, id)}
-                    icon={id === activePoiId ? activePoiIcon : poiIcon}
+                    icon={observer ? (id === activePoiId ? activeObserverIcon : observerIcon) : id === activePoiId ? activePoiIcon : poiIcon}
                     draggable={mode === 'move_poi'}/>
                 )}
               </Map>
             </div>
             <div className="col-md-6" ref="toposcope">
-              {viewer && <Toposcope baseLat={viewer.lat} baseLng={viewer.lng} pois={pois} messages={messages} inscriptions={inscriptions}/>}
+              {observerPoi && <Toposcope pois={pois} messages={messages} inscriptions={inscriptions}/>}
             </div>
           </div>
           <div className="row">
@@ -240,10 +233,16 @@ class Main extends React.Component {
             </div>
             <div className="col-md-6">
               {activePoi &&
-                <FormGroup>
-                  <ControlLabel>{t('label')}</ControlLabel>
-                  <FormControl type="text" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder={t('labelPlaceholder')}/>
-                </FormGroup>
+                <div>
+                  <FormGroup>
+                    <ControlLabel>{t('label')}</ControlLabel>
+                    <FormControl type="text" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder={t('labelPlaceholder')}/>
+                  </FormGroup>
+                  <FormGroup>
+                    <ControlLabel>{t('observer')}</ControlLabel>
+                    <Checkbox checked={!!activePoi.observer} onChange={this.handleObserverChange.bind(this)}/>
+                  </FormGroup>
+                </div>
               }
             </div>
           </div>
