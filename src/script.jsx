@@ -48,7 +48,9 @@ class Main extends React.Component {
       messages: readMessages(language),
       showHelp: false,
       innerCircleRadius: 25,
-      loadPoiMaxDistance: 1000
+      loadPoiMaxDistance: 1000,
+      fontSize: 4,
+      addLineBreaks: false
     };
 
     if (toposcope) {
@@ -93,7 +95,7 @@ class Main extends React.Component {
       const { lat, lng } = e.latlng;
       const radius = parseFloat(this.state.loadPoiMaxDistance);
       this.setState({ fetching: true });
-      loadPeaks(lat, lng, !isNaN(radius) && radius > 0 && radius <= 20000 ? radius : 1000, this.state.language).then(pois => {
+      loadPeaks(lat, lng, !isNaN(radius) && radius > 0 && radius <= 20000 ? radius : 1000, this.state.language, this.state.addLineBreaks).then(pois => {
         if (this.state.pois.length === 0 && pois.length) {
           pois[0].observer = true;
         }
@@ -170,9 +172,17 @@ class Main extends React.Component {
     this.setState({ loadPoiMaxDistance: e.target.value });
   }
 
+  handleFontSizeChange(e) {
+    this.setState({ fontSize: e.target.value });
+  }
+
+  handleAddLineBreaksChange() {
+    this.setState({ addLineBreaks: !this.state.addLineBreaks });
+  }
+
   render() {
     const { pois, activePoiId, mode, fetching, center, zoom, map, messages, language,
-      inscriptions, showHelp, innerCircleRadius, loadPoiMaxDistance } = this.state;
+      inscriptions, showHelp, innerCircleRadius, loadPoiMaxDistance, fontSize, addLineBreaks } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
     const observerPoi = pois.find(({ observer }) => observer);
     const t = key => messages[key] || key;
@@ -232,7 +242,7 @@ class Main extends React.Component {
             </div>
             <div className="col-md-6" ref="toposcope">
               {observerPoi && <Toposcope pois={pois} messages={messages} inscriptions={inscriptions} language={language}
-                innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25}/>}
+                innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25} fontSize={parseFloat(fontSize) || 4}/>}
             </div>
           </div>
           <div className="row">
@@ -250,8 +260,16 @@ class Main extends React.Component {
                 <FormControl type="number" min="0" max="80" value={innerCircleRadius} onChange={this.handleInnerCircleRadiusChange.bind(this)}/>
               </FormGroup>
               <FormGroup>
+                <ControlLabel>{t('fontSize')}</ControlLabel>
+                <FormControl type="number" min="0" max="10" step="0.2" value={fontSize} onChange={this.handleFontSizeChange.bind(this)}/>
+              </FormGroup>
+              <FormGroup>
                 <ControlLabel>{t('loadPoiMaxDistance')}</ControlLabel>
                 <FormControl type="number" min="1" max="20000" value={loadPoiMaxDistance} onChange={this.handleLoadPoiMaxDistanceChange.bind(this)}/>
+              </FormGroup>
+              <FormGroup>
+                <ControlLabel>{t('addLineBreaks')}</ControlLabel>
+                <Checkbox checked={addLineBreaks} onChange={this.handleAddLineBreaksChange.bind(this)}/>
               </FormGroup>
             </div>
             <div className="col-md-4">

@@ -2,7 +2,7 @@ const React = require('react');
 
 module.exports = Toposcope;
 
-function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscriptions, language }) {
+function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscriptions, language, fontSize }) {
   const t = key => messages[key] || key;
   const observerPoi = pois.find(({ observer }) => observer);
   const poisAround = pois.filter(poi => poi !== observerPoi);
@@ -30,7 +30,7 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
 
         .lineText {
           font-family: Arial;
-          font-size: 3.5px;
+          font-size: ${fontSize}px;
           text-anchor: end;
         }
       `}</style>

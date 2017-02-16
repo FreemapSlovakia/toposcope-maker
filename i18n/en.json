@@ -18,6 +18,8 @@
   "inscription": "Inscription",
   "help": "Help",
   "close": "Close",
+  "fontSize": "Font size",
+  "addLineBreaks": "Add line break after loaded peak elevation",
   "helpText": [
     "<p>This is a tool for creating <a href='https://en.wikipedia.org/wiki/Toposcope' target='_blank'>toposcopes</a>. You can find the project at <a href='https://github.com/FreemapSlovakia/toposcope-maker' target='_blank'>GitHub</a>.</p>",
     "<p>Functions:<ul>",

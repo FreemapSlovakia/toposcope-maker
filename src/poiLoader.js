@@ -1,4 +1,4 @@
-  module.exports = function loadPeaks(lat, lng, distance = 5000, language) {
+  module.exports = function loadPeaks(lat, lng, distance = 5000, language, addLineBreaks) {
   const query = `[out:json][timeout:25]; ( node["natural"="peak"] (around:${distance},${lat},${lng}); ); out body; >; out skel qt;`;
 
   const nf = typeof Intl !== 'undefined' ? new Intl.NumberFormat(language, { minimumFractionDigits: 0, maximumFractionDigits: 1 }) : null;
@@ -12,6 +12,6 @@
     body: 'data=' + encodeURIComponent(query)
   }).then(res => res.json()).then(data =>
     data.elements.map(({ id, lat, lon, tags: { name, ele } }) =>
-      ({ id, lat, lng: lon, text: `${name || '???'} (${formatEle(ele) || '???'} m)\n{d} km`, observer: false }))
+      ({ id, lat, lng: lon, text: `${name || '???'} (${formatEle(ele) || '???'} m)${addLineBreaks ? '\n' : ', '}{d} km`, observer: false }))
   );
 }
