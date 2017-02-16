@@ -13,5 +13,18 @@
   "south": "S",
   "west": "W",
   "north": "N",
-  "inscription": "Inscription"
+  "inscription": "Inscription",
+  "help": "Help",
+  "close": "Close",
+  "loadPeaksPrompt": "Enter max distance in meters less than 20000.",
+  "helpText": [
+    "<p>Functions:<dl>",
+    "<li>Place Observer - clicking the map set the position of the toposcope location</li>",
+    "<li>Load peaks - clickig the map set the position around which sould be peaks from OpenStreetMap database downloaded</li>",
+    "<li>Add POI - clicking the map will add new point to that location</li>",
+    "<li>Move - enables dragging the points in the map</li>",
+    "<li>Delete - clicking the point will remove it</li>",
+    "<li>Ulož obrázok - ponukne stiahnúť obrázok výhľadovej ružice do SVG súboru</li>",
+    "</dl></p>"
+  ]
 }

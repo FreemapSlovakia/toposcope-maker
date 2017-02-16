@@ -13,5 +13,18 @@
   "south": "J",
   "west": "Z",
   "north": "S",
-  "inscription": "Vlastný text"
+  "inscription": "Vlastný text",
+  "help": "Pomoc",
+  "close": "Zavri",
+  "loadPeaksPrompt": "Zadajte maximálnu vzdialenosť v metroch menšiu ako 20000.",
+  "helpText": [
+    "<p>Popis funkcií:<dl>",
+    "<li>Zadávanie pozorovateľa - kliknutím do mapy určite pozíciu miesta výhľadovej ružice</li>",
+    "<li>Načítavanie vrcholov - kliknutím do mapy určite pozíciu okolo ktorej sa majú z OpenStreetMap databázy načítať vrcholy</li>",
+    "<li>Pridávanie POI - kliknutím do mapy určite pozíciu kde sa má pridať nový bod</li>",
+    "<li>Posun - umožní posúvanie bodov v mape ťahaním</li>",
+    "<li>Mazanie - kliknutím na bod v mape ho zmaže</li>",
+    "<li>Ulož obrázok - ponukne stiahnúť obrázok výhľadovej ružice do SVG súboru</li>",
+    "</dl></p>"
+  ]
 }

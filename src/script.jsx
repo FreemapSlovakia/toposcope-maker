@@ -2,6 +2,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const { Map, TileLayer, Marker, LayersControl } = require('react-leaflet');
 const Toposcope = require('./toposcope.jsx');
+const Help = require('./help.jsx');
 const Hourglass = require('./hourglass.jsx');
 const createMarker = require('./markers.js');
 const loadPeaks = require('./poiLoader.js');
@@ -41,7 +42,8 @@ class Main extends React.Component {
       fetching: false,
       language,
       inscriptions: [ '', '{a}', '', '' ],
-      messages: require(`./${language}.json`)
+      messages: readMessages(language),
+      showHelp: false
     };
 
     if (toposcope) {
@@ -55,6 +57,7 @@ class Main extends React.Component {
     const toSave = Object.assign({}, this.state);
     delete toSave.messages;
     delete toSave.fetching;
+    delete toSave.showHelp;
     localStorage.setItem('toposcope', JSON.stringify(toSave));
   }
 
@@ -89,7 +92,7 @@ class Main extends React.Component {
       this.setState({ viewer: e.latlng, activePoiId: null });
     } else if (this.state.mode === 'load_peaks') {
       const { lat, lng } = e.latlng;
-      let radius = window.prompt('Radius in meters? Must be less than 20000.', 1000);
+      let radius = window.prompt(this.state.messages['loadPeaksPrompt'], 1000);
       radius = parseFloat(radius);
       if (radius > 0 && radius <= 20000) {
         this.setState({ fetching: true });
@@ -139,7 +142,7 @@ class Main extends React.Component {
   }
 
   handleSetLanguage(language) {
-    this.setState({ language, messages: require(`./${language}.json`) });
+    this.setState({ language, messages: readMessages(language) });
   }
 
   handleCustomTextChange(i, e) {
@@ -148,13 +151,23 @@ class Main extends React.Component {
     this.setState({ inscriptions });
   }
 
+  handleShowHelp() {
+    this.setState({ showHelp: true });
+  }
+
+  handleHideHelp() {
+    this.setState({ showHelp: false });
+  }
+
   render() {
-    const { viewer, pois, activePoiId, mode, fetching, center, zoom, map, messages, language, inscriptions } = this.state;
+    const { viewer, pois, activePoiId, mode, fetching, center, zoom, map, messages, language, inscriptions, showHelp } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
     const t = key => messages[key] || key;
 
     return (
       <Hourglass active={fetching}>
+        <Help onClose={this.handleHideHelp.bind(this)} show={showHelp} messages={messages}/>
+
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>Toposcope Maker</Navbar.Brand>
@@ -168,6 +181,7 @@ class Main extends React.Component {
               <NavItem active={mode === 'move_poi'} onClick={this.handleSetMode.bind(this, 'move_poi')}>{t('move')}</NavItem>
               <NavItem active={mode === 'delete_poi'} onClick={this.handleSetMode.bind(this, 'delete_poi')}>{t('delete')}</NavItem>
               <NavItem onClick={this.handleSave.bind(this)} disabled={!viewer}>{t('saveToposcope')}</NavItem>
+              <NavItem onClick={this.handleShowHelp.bind(this)}>{t('help')}</NavItem>
               <NavDropdown title={t('language')} id="basic-nav-dropdown">
                 <MenuItem onClick={this.handleSetLanguage.bind(this, 'en')}>English{language === 'en' ? ' ✓' : ''}</MenuItem>
                 <MenuItem onClick={this.handleSetLanguage.bind(this, 'sk')}>Slovensky{language === 'sk' ? ' ✓' : ''}</MenuItem>
@@ -237,6 +251,17 @@ class Main extends React.Component {
       </Hourglass>
     );
   }
+}
+
+function readMessages(language) {
+  const messages = require(`./${language}.json`);
+  Object.keys(messages).forEach(function (key) {
+    const message = messages[key];
+    if (Array.isArray(message)) {
+      messages[key] = message.join('\n');
+    }
+  });
+  return messages;
 }
 
 ReactDOM.render(<Main/>, document.getElementById('main'));
