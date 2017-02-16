@@ -64,12 +64,12 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
           return [
             <text key={'x' + id} className="lineText">
               <textPath xlinkHref={`#p${id}`} startOffset="100%">
-                <tspan x="0" dy="-0.5em" xmlSpace="preserve">{lines[0]}    </tspan>
+                <tspan x="0" dy="-2" xmlSpace="preserve">{lines[0]}&#160;&#160;&#160;&#160;</tspan>
               </textPath>
             </text>,
             lines[1] ? <text key={id} className="lineText">
               <textPath xlinkHref={`#p${id}`} startOffset="100%">
-                <tspan x="0" dy="1.5em" xmlSpace="preserve">{lines[1]}    </tspan>
+                <tspan x="0" dy="5" xmlSpace="preserve">{lines[1]}&#160;&#160;&#160;&#160;</tspan>
               </textPath>
             </text> : undefined
           ];
@@ -79,8 +79,8 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
       <circle cx="0" cy="0" r={outerRadius} className="line"/>
       <circle cx="0" cy="0" r={innerRadius} className="line"/>
 
-      <text x="0" y={-innerTexts.length - 0.5 + 'em'} className="lineText">
-        {innerTexts.map((line, i) => <tspan key={i} textAnchor="middle" x="0" dy="2em">{line}</tspan>)}
+      <text x="0" y={-1 - innerTexts.length * 3} className="lineText">
+        {innerTexts.map((line, i) => <tspan key={i} textAnchor="middle" x="0" dy="6">{line}</tspan>)}
       </text>
     </svg>
   );
