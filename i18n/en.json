@@ -19,14 +19,14 @@
   "loadPeaksPrompt": "Enter max distance in meters less than 20000.",
   "helpText": [
     "<p>Functions:<ul>",
-    "<li>Add POI - clicking the map will add new point to that location</li>",
-    "<li>Load peaks - clickig the map set the position around which sould be peaks from OpenStreetMap database downloaded</li>",
-    "<li>Move - enables dragging the points in the map</li>",
-    "<li>Delete - clicking the point will remove it</li>",
-    "<li>Save image - offers to download toposcope image as SVG</li>",
+    "<li><u>Add POI</u> - clicking the map will add new point to that location</li>",
+    "<li><u>Load peaks</u> - clickig the map set the position around which sould be peaks from OpenStreetMap database downloaded</li>",
+    "<li><u>Move</u> - enables dragging the points in the map</li>",
+    "<li><u>Delete</u> - clicking the point will remove it</li>",
+    "<li><u>Save image</u> - offers to download toposcope image as SVG</li>",
     "</ul></p><p>Point properties:<ul>",
-    "<li>Label - point label; <code>{d}</code> in the text will be replaced by distance of the point from the observer in km</li>",
-    "<li>Observer - specifies if the point is that from which the observation is done (where the toposcope is placed)</li>",
+    "<li><u>Label</u> - point label; <mark>{d}</mark> in the text will be replaced by distance of the point from the observer in km</li>",
+    "<li><u>Observer</u> - specifies if the point is that from which the observation is done (where the toposcope is placed)</li>",
     "</ul></p>"
   ]
 }

@@ -7,7 +7,7 @@ function Help({ show, onClose, messages }) {
   const t = key => messages[key] || key;
 
   return (
-    <Modal show={show} onHide={onClose}>
+    <Modal dialogClassName='modal-lg' show={show} onHide={onClose}>
       <Modal.Header closeButton>
         <Modal.Title>{t('help')}</Modal.Title>
       </Modal.Header>

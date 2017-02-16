@@ -19,14 +19,14 @@
   "loadPeaksPrompt": "Zadajte maximálnu vzdialenosť v metroch menšiu ako 20000.",
   "helpText": [
     "<p>Popis funkcií:<ul>",
-    "<li>Pridávanie POI - kliknutím do mapy určite pozíciu kde sa má pridať nový bod</li>",
-    "<li>Načítavanie vrcholov - kliknutím do mapy určite pozíciu okolo ktorej sa majú z OpenStreetMap databázy načítať vrcholy</li>",
-    "<li>Posun - umožní posúvanie bodov v mape ťahaním</li>",
-    "<li>Mazanie - kliknutím na bod v mape ho zmaže</li>",
-    "<li>Ulož obrázok - ponukne stiahnúť obrázok výhľadovej ružice do SVG súboru</li>",
+    "<li><u>Pridávanie POI</u> - kliknutím do mapy určite pozíciu kde sa má pridať nový bod</li>",
+    "<li><u>Načítavanie vrcholov</u> - kliknutím do mapy určite pozíciu okolo ktorej sa majú z OpenStreetMap databázy načítať vrcholy</li>",
+    "<li><u>Posun</u> - umožní posúvanie bodov v mape ťahaním</li>",
+    "<li><u>Mazanie</u> - kliknutím na bod v mape ho zmaže</li>",
+    "<li><u>Ulož obrázok</u> - ponukne stiahnúť obrázok výhľadovej ružice do SVG súboru</li>",
     "</ul></p><p>Vlastnosti bodu:<ul>",
-    "<li>Text - popis bodu; <code>{d}</code> v texte sa nahradí vzdialenosťou bodu od pozorovateľa v km</li>",
-    "<li>Pozorovateľ - určuje bod z ktorého sa pozoruje (kde je umiestnená výhľadova ružica)</li>",
+    "<li><u>Text</u> - popis bodu; <mark>{d}</mark> v texte sa nahradí vzdialenosťou bodu od pozorovateľa v km</li>",
+    "<li><u>Pozorovateľ</u> - určuje bod z ktorého sa pozoruje (kde je umiestnená výhľadova ružica)</li>",
     "</ul></p>"
   ]
 }
