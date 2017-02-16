@@ -1,5 +1,6 @@
 {
   "innerCircleRadius": "Inner circle radius",
+  "loadPoiMaxDistance": "Max distance of loaded peaks",
   "observer": "Observer",
   "loadPeaks": "Load Peaks",
   "addPoi": "Add POI",
@@ -17,7 +18,6 @@
   "inscription": "Inscription",
   "help": "Help",
   "close": "Close",
-  "loadPeaksPrompt": "Enter max distance in meters less than 20000.",
   "helpText": [
     "<p>Functions:<ul>",
     "<li><u>Add POI</u> - clicking the map will add new point to that location</li>",
@@ -27,6 +27,7 @@
     "<li><u>Save image</u> - offers to download toposcope image as SVG</li>",
     "</ul></p><p>Point properties:<ul>",
     "<li><u>Inner circle radius</u> - radius of the inner circle in the toposcope</li>",
+    "<li><u>Max distance of loaded peaks</u> - max distance of peaks to load from the clicked position in the \"Load Peaks\" mode</li>",
     "<li><u>Label</u> - point label; <mark>{d}</mark> in the text will be replaced by distance of the point from the observer in km</li>",
     "<li><u>Observer</u> - specifies if the point is that from which the observation is done (where the toposcope is placed)</li>",
     "</ul></p>"

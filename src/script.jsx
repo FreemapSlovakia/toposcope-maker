@@ -47,7 +47,8 @@ class Main extends React.Component {
       inscriptions: [ '', '{a}', '', '' ],
       messages: readMessages(language),
       showHelp: false,
-      innerCircleRadius: 25
+      innerCircleRadius: 25,
+      loadPoiMaxDistance: 1000
     };
 
     if (toposcope) {
@@ -90,15 +91,12 @@ class Main extends React.Component {
       this.nextId--;
     } else if (this.state.mode === 'load_peaks') {
       const { lat, lng } = e.latlng;
-      let radius = window.prompt(this.state.messages['loadPeaksPrompt'], 1000);
-      radius = parseFloat(radius);
-      if (radius > 0 && radius <= 20000) {
-        this.setState({ fetching: true });
-        loadPeaks(lat, lng, radius).then(pois => {
-          this.setState({ activePoiId: null,
-            pois: [ ...this.state.pois.filter(({ id1 }) => pois.find(({ id2 }) => id1 !== id2) !== -1), ...pois ] });
-        }).catch().then(() => this.setState({ fetching: false }));
-      }
+      const radius = parseFloat(this.state.loadPoiMaxDistance);
+      this.setState({ fetching: true });
+      loadPeaks(lat, lng, !isNaN(radius) && radius > 0 && radius <= 20000 ? radius : 1000).then(pois => {
+        this.setState({ activePoiId: null,
+          pois: [ ...this.state.pois.filter(({ id1 }) => pois.find(({ id2 }) => id1 !== id2) !== -1), ...pois ] });
+      }).catch().then(() => this.setState({ fetching: false }));
     } else {
       this.setState({ activePoiId: null, });
     }
@@ -165,8 +163,13 @@ class Main extends React.Component {
     this.setState({ innerCircleRadius: e.target.value });
   }
 
+  handleLoadPoiMaxDistanceChange(e) {
+    this.setState({ loadPoiMaxDistance: e.target.value });
+  }
+
   render() {
-    const { pois, activePoiId, mode, fetching, center, zoom, map, messages, language, inscriptions, showHelp, innerCircleRadius } = this.state;
+    const { pois, activePoiId, mode, fetching, center, zoom, map, messages, language,
+      inscriptions, showHelp, innerCircleRadius, loadPoiMaxDistance } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
     const observerPoi = pois.find(({ observer }) => observer);
     const t = key => messages[key] || key;
@@ -242,6 +245,10 @@ class Main extends React.Component {
               <FormGroup>
                 <ControlLabel>{t('innerCircleRadius')}</ControlLabel>
                 <FormControl type="number" min="0" max="80" value={innerCircleRadius} onChange={this.handleInnerCircleRadiusChange.bind(this)}/>
+              </FormGroup>
+              <FormGroup>
+                <ControlLabel>{t('loadPoiMaxDistance')}</ControlLabel>
+                <FormControl type="number" min="1" max="20000" value={loadPoiMaxDistance} onChange={this.handleLoadPoiMaxDistanceChange.bind(this)}/>
               </FormGroup>
             </div>
             <div className="col-md-4">
