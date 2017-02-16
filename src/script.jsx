@@ -50,7 +50,8 @@ class Main extends React.Component {
       innerCircleRadius: 25,
       loadPoiMaxDistance: 1000,
       fontSize: 4,
-      addLineBreaks: false
+      addLineBreaks: false,
+      preventUpturnedText: false
     };
 
     if (toposcope) {
@@ -180,9 +181,13 @@ class Main extends React.Component {
     this.setState({ addLineBreaks: !this.state.addLineBreaks });
   }
 
+  handlePreventUpturnedTextChange() {
+    this.setState({ preventUpturnedText: !this.state.preventUpturnedText });
+  }
+
   render() {
     const { pois, activePoiId, mode, fetching, center, zoom, map, messages, language,
-      inscriptions, showHelp, innerCircleRadius, loadPoiMaxDistance, fontSize, addLineBreaks } = this.state;
+      inscriptions, showHelp, innerCircleRadius, loadPoiMaxDistance, fontSize, addLineBreaks, preventUpturnedText } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
     const observerPoi = pois.find(({ observer }) => observer);
     const t = key => messages[key] || key;
@@ -242,7 +247,8 @@ class Main extends React.Component {
             </div>
             <div className="col-md-6" ref="toposcope">
               {observerPoi && <Toposcope pois={pois} messages={messages} inscriptions={inscriptions} language={language}
-                innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25} fontSize={parseFloat(fontSize) || 4}/>}
+                innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25} fontSize={parseFloat(fontSize) || 4}
+                preventUpturnedText={preventUpturnedText}/>}
             </div>
           </div>
           <div className="row">
@@ -262,6 +268,10 @@ class Main extends React.Component {
               <FormGroup>
                 <ControlLabel>{t('fontSize')}</ControlLabel>
                 <FormControl type="number" min="0" max="10" step="0.1" value={fontSize} onChange={this.handleFontSizeChange.bind(this)}/>
+              </FormGroup>
+              <FormGroup>
+                <ControlLabel>{t('preventUpturnedText')}</ControlLabel>
+                <Checkbox checked={preventUpturnedText} onChange={this.handlePreventUpturnedTextChange.bind(this)}/>
               </FormGroup>
               <FormGroup>
                 <ControlLabel>{t('loadPoiMaxDistance')}</ControlLabel>

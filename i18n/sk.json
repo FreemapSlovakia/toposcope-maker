@@ -20,6 +20,7 @@
   "close": "Zavri",
   "fontSize": "Veľkosť textu",
   "addLineBreaks": "Zalom riadok za nadm. výškou načítaneho vrcholu",
+  "preventUpturnedText": "Zabráň textu dole hlavou",
   "helpText": [
     "<p>Nástroj slúži na tvorbu <a href='https://en.wikipedia.org/wiki/Toposcope' target='_blank'>výhľadových ružíc</a>. Projekt nájdete na <a href='https://github.com/FreemapSlovakia/toposcope-maker' target='_blank'>GitHub-e</a>.</p>",
     "<p>Popis funkcií:<ul>",

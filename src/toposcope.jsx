@@ -2,10 +2,10 @@ const React = require('react');
 
 module.exports = Toposcope;
 
-function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscriptions, language, fontSize }) {
+function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscriptions, language, fontSize, preventUpturnedText }) {
   const t = key => messages[key] || key;
   const observerPoi = pois.find(({ observer }) => observer);
-  const poisAround = pois.filter(poi => poi !== observerPoi);
+  const poisAround = pois.filter(poi => poi !== observerPoi).map(poi => Object.assign({}, poi));
   const nf = typeof Intl !== 'undefined' ? new Intl.NumberFormat(language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : null;
 
   function formatDistance(d) {
@@ -31,14 +31,20 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
         .lineText {
           font-family: Arial;
           font-size: ${fontSize}px;
-          text-anchor: end;
         }
       `}</style>
 
       <defs>
-        {poisAround.map(({ id, lat, lng }) => {
+        {poisAround.map(poi => {
+          const { id, lat, lng } = poi;
           const b = Math.PI + bearing(toRad(observerPoi.lat), toRad(observerPoi.lng), toRad(lat), toRad(lng));
-          return <path id={`p${id}`} key={id} d={`M ${Math.sin(b) * innerRadius} ${Math.cos(b) * innerRadius} L ${Math.sin(b) * outerRadius} ${Math.cos(b) * outerRadius}`}/>;
+          let p1 = `${Math.sin(b) * innerRadius} ${Math.cos(b) * innerRadius}`;
+          let p2 = `${Math.sin(b) * outerRadius} ${Math.cos(b) * outerRadius}`;
+          if (!(b > 2 * Math.PI) && preventUpturnedText) {
+            [ p1, p2 ] = [ p2, p1 ];
+            poi.reversed = true;
+          }
+          return <path id={`p${id}`} key={id} d={`M ${p1} L ${p2}`}/>;
         })}
       </defs>
 
@@ -59,17 +65,17 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
       {poisAround.map(({ id }) => <use key={id} xlinkHref={`#p${id}`} className="line"/>)}
 
       {
-        poisAround.map(({ id, lat, lng, text }) => {
+        poisAround.map(({ id, lat, lng, text, reversed }) => {
           const lines = text.replace('{d}', formatDistance(L.latLng(lat, lng).distanceTo(L.latLng(observerPoi.lat, observerPoi.lng)))).split('\n');
           return [
             <text key={'x' + id} className="lineText">
-              <textPath xlinkHref={`#p${id}`} startOffset="100%">
-                <tspan x="0" dy="-2" xmlSpace="preserve">{lines[0]}&#160;&#160;&#160;&#160;</tspan>
+              <textPath xlinkHref={`#p${id}`} startOffset={reversed ? '0%' : '100%'} textAnchor={reversed ? 'start' : 'end'}>
+                <tspan x="0" dy="-2" xmlSpace="preserve">&#160;&#160;&#160;&#160;{lines[0]}&#160;&#160;&#160;&#160;</tspan>
               </textPath>
             </text>,
             lines[1] ? <text key={id} className="lineText">
-              <textPath xlinkHref={`#p${id}`} startOffset="100%">
-                <tspan x="0" dy="5" xmlSpace="preserve">{lines[1]}&#160;&#160;&#160;&#160;</tspan>
+              <textPath xlinkHref={`#p${id}`} startOffset={reversed ? '0%' : '100%'} textAnchor={reversed ? 'start' : 'end'}>
+                <tspan x="0" dy="5" xmlSpace="preserve">&#160;&#160;&#160;&#160;{lines[1]}&#160;&#160;&#160;&#160;</tspan>
               </textPath>
             </text> : undefined
           ];
@@ -96,11 +102,13 @@ function formatGpsCoord(angle) {
 Toposcope.propTypes = {
   innerRadius: React.PropTypes.number,
   outerRadius: React.PropTypes.number,
+  fontSize: React.PropTypes.number,
   inscriptions: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   messages: React.PropTypes.object.isRequired,
   pois: React.PropTypes.array.isRequired,
   title: React.PropTypes.string,
-  language: React.PropTypes.string.isRequired
+  language: React.PropTypes.string.isRequired,
+  preventUpturnedText: React.PropTypes.bool
 };
 
 const PI2 = 2 * Math.PI;
