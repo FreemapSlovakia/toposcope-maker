@@ -86,7 +86,7 @@ class Main extends React.Component {
     if (this.state.mode === 'add_poi') {
       this.setState({
         activePoiId: this.nextId,
-        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId, observer: false } ]
+        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId, observer: this.state.pois.length === 0 } ]
       });
       this.nextId--;
     } else if (this.state.mode === 'load_peaks') {
@@ -94,6 +94,9 @@ class Main extends React.Component {
       const radius = parseFloat(this.state.loadPoiMaxDistance);
       this.setState({ fetching: true });
       loadPeaks(lat, lng, !isNaN(radius) && radius > 0 && radius <= 20000 ? radius : 1000).then(pois => {
+        if (this.state.pois.length === 0 && pois.length) {
+          pois[0].observer = true;
+        }
         this.setState({ activePoiId: null,
           pois: [ ...this.state.pois.filter(({ id1 }) => pois.find(({ id2 }) => id1 !== id2) !== -1), ...pois ] });
       }).catch().then(() => this.setState({ fetching: false }));
