@@ -261,7 +261,7 @@ class Main extends React.Component {
               </FormGroup>
               <FormGroup>
                 <ControlLabel>{t('fontSize')}</ControlLabel>
-                <FormControl type="number" min="0" max="10" step="0.2" value={fontSize} onChange={this.handleFontSizeChange.bind(this)}/>
+                <FormControl type="number" min="0" max="10" step="0.1" value={fontSize} onChange={this.handleFontSizeChange.bind(this)}/>
               </FormGroup>
               <FormGroup>
                 <ControlLabel>{t('loadPoiMaxDistance')}</ControlLabel>
