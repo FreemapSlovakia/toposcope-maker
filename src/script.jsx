@@ -86,14 +86,14 @@ class Main extends React.Component {
     if (this.state.mode === 'add_poi') {
       this.setState({
         activePoiId: this.nextId,
-        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId, observer: this.state.pois.length === 0 } ]
+        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '{d} km', id: this.nextId, observer: this.state.pois.length === 0 } ]
       });
       this.nextId--;
     } else if (this.state.mode === 'load_peaks') {
       const { lat, lng } = e.latlng;
       const radius = parseFloat(this.state.loadPoiMaxDistance);
       this.setState({ fetching: true });
-      loadPeaks(lat, lng, !isNaN(radius) && radius > 0 && radius <= 20000 ? radius : 1000).then(pois => {
+      loadPeaks(lat, lng, !isNaN(radius) && radius > 0 && radius <= 20000 ? radius : 1000, this.state.language).then(pois => {
         if (this.state.pois.length === 0 && pois.length) {
           pois[0].observer = true;
         }
@@ -231,7 +231,7 @@ class Main extends React.Component {
               </Map>
             </div>
             <div className="col-md-6" ref="toposcope">
-              {observerPoi && <Toposcope pois={pois} messages={messages} inscriptions={inscriptions}
+              {observerPoi && <Toposcope pois={pois} messages={messages} inscriptions={inscriptions} language={language}
                 innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25}/>}
             </div>
           </div>

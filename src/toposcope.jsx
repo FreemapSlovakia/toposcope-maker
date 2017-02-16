@@ -2,10 +2,15 @@ const React = require('react');
 
 module.exports = Toposcope;
 
-function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscriptions }) {
+function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscriptions, language }) {
   const t = key => messages[key] || key;
   const observerPoi = pois.find(({ observer }) => observer);
   const poisAround = pois.filter(poi => poi !== observerPoi);
+  const nf = typeof Intl !== 'undefined' ? new Intl.NumberFormat(language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : null;
+
+  function formatDistance(d) {
+    return nf ? nf.format(d) : (Math.round(d / 100) / 10);
+  }
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="-100 -100 200 200">
@@ -52,7 +57,7 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
           <text key={id} className="lineText">
             <textPath xlinkHref={`#p${id}`} startOffset="100%">
               <tspan dy="-2" xmlSpace="preserve">
-                {text.replace('{d}', Math.round(L.latLng(lat, lng).distanceTo(L.latLng(observerPoi.lat, observerPoi.lng)) / 100) / 10) + '   '}
+                {text.replace('{d}', formatDistance(L.latLng(lat, lng).distanceTo(L.latLng(observerPoi.lat, observerPoi.lng)))) + '   '}
               </tspan>
             </textPath>
           </text>
@@ -62,11 +67,11 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
       <circle cx="0" cy="0" r={outerRadius} className="line"/>
       <circle cx="0" cy="0" r={innerRadius} className="line"/>
 
-    <text x="0" y={observerPoi.text ? '-3.5em' : '-2.5em'} className="lineText">
-      {observerPoi.text && <tspan textAnchor="middle" x="0" dy="2em">{observerPoi.text}</tspan>}
-      <tspan textAnchor="middle" x="0" dy="2em">{(observerPoi.lat > 0 ? 'N' : 'S') + ' ' + formatGpsCoord(Math.abs(observerPoi.lat))}</tspan>
-      <tspan textAnchor="middle" x="0" dy="2em">{(observerPoi.lng < 0 ? 'W' : 'E') + ' ' + formatGpsCoord(Math.abs(observerPoi.lng))}</tspan>
-    </text>
+      <text x="0" y={observerPoi.text ? '-3.5em' : '-2.5em'} className="lineText">
+        {observerPoi.text && <tspan textAnchor="middle" x="0" dy="2em">{observerPoi.text}</tspan>}
+        <tspan textAnchor="middle" x="0" dy="2em">{(observerPoi.lat > 0 ? 'N' : 'S') + ' ' + formatGpsCoord(Math.abs(observerPoi.lat))}</tspan>
+        <tspan textAnchor="middle" x="0" dy="2em">{(observerPoi.lng < 0 ? 'W' : 'E') + ' ' + formatGpsCoord(Math.abs(observerPoi.lng))}</tspan>
+      </text>
     </svg>
   );
 }
@@ -84,7 +89,8 @@ Toposcope.propTypes = {
   inscriptions: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   messages: React.PropTypes.object.isRequired,
   pois: React.PropTypes.array.isRequired,
-  title: React.PropTypes.string
+  title: React.PropTypes.string,
+  language: React.PropTypes.string.isRequired
 };
 
 const PI2 = 2 * Math.PI;
