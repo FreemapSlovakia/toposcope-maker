@@ -254,7 +254,7 @@ class Main extends React.Component {
 }
 
 function readMessages(language) {
-  const messages = require(`./${language}.json`);
+  const messages = require(`../i18n/${language}.json`);
   Object.keys(messages).forEach(function (key) {
     const message = messages[key];
     if (Array.isArray(message)) {
