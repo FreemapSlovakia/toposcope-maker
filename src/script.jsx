@@ -33,7 +33,7 @@ class Main extends React.Component {
 
     const toposcope = JSON.parse(localStorage.getItem(localStorageName));
     const language = toposcope && toposcope.language ||
-      navigator.languages.map(language => language.split('-')[0]).find(language => language === 'en' || language === 'sk')
+      navigator.languages.map(language => language.split('-')[0]).find(language => language === 'en' || language === 'sk' || language === 'cz')
 
     this.state = {
       map: 'OpenStreetMap Mapnik',
@@ -213,6 +213,7 @@ class Main extends React.Component {
               <NavDropdown title={t('language')} id="basic-nav-dropdown">
                 <MenuItem onClick={this.handleSetLanguage.bind(this, 'en')}>English{language === 'en' ? ' ✓' : ''}</MenuItem>
                 <MenuItem onClick={this.handleSetLanguage.bind(this, 'sk')}>Slovensky{language === 'sk' ? ' ✓' : ''}</MenuItem>
+                <MenuItem onClick={this.handleSetLanguage.bind(this, 'cz')}>Česky{language === 'cz' ? ' ✓' : ''}</MenuItem>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>
