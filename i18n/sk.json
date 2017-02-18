@@ -7,7 +7,7 @@
   "move": "Posun",
   "delete": "Mazanie",
   "language": "Jazyk",
-  "saveToposcope": "Ulož obrázok",
+  "saveToposcope": "Stiahni obrázok",
   "label": "Text",
   "labelPlaceholder": "Názov, {d} km",
   "osmAttribution": "© prispievatelia OpenStreetMap",
@@ -23,6 +23,9 @@
   "preventUpturnedText": "Zabráň textu dole hlavou",
   "project": "Projekt",
   "newProject": "Nový",
+  "loadProject": "Načítaj",
+  "saveProject": "Ulož",
+  "importError": "Chyba načítania.",
   "helpText": [
     "<p>Nástroj slúži na tvorbu <a href='https://en.wikipedia.org/wiki/Toposcope' target='_blank'>výhľadových ružíc</a>. Projekt nájdete na <a href='https://github.com/FreemapSlovakia/toposcope-maker' target='_blank'>GitHub-e</a>.</p>",
     "<p>Popis funkcií:<ul>",

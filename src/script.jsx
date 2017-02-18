@@ -81,11 +81,9 @@ class Main extends React.Component {
   }
 
   handlePoiClick(poiId) {
-    if (this.state.mode === 'delete_poi') {
-      this.setState({ activePoiId: null, pois: [ ...this.state.pois.filter(({ id }) => id !== poiId) ] });
-    } else {
-      this.setState({ activePoiId: poiId });
-    }
+    this.setState(this.state.mode === 'delete_poi' ?
+      { activePoiId: null, pois: [ ...this.state.pois.filter(({ id }) => id !== poiId) ] }
+      : { activePoiId: poiId });
   }
 
   handleMapClick(e) {
@@ -129,7 +127,7 @@ class Main extends React.Component {
     ] });
   }
 
-  handleSave() {
+  handleSaveImage() {
     FileSaver.saveAs(new Blob([ this.refs.toposcope.innerHTML.replace(/&nbsp;/g, '&#160;') ], { type: 'image/svg+xml' }), 'toposcope.svg');
   }
 
@@ -192,6 +190,34 @@ class Main extends React.Component {
     this.setState(cleanState);
   }
 
+  handleSaveProject() {
+    FileSaver.saveAs(new Blob([ localStorage.getItem(localStorageName) ], { type: 'application/json' }), 'toposcope.json');
+  }
+
+  handleLoadProject() {
+    const { file } = this.refs;
+    file.style.display = '';
+    file.focus();
+    file.click();
+    file.style.display = 'none';
+  }
+
+  load() {
+    const file = this.refs.file.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          this.setState(JSON.parse(e.target.result));
+          this.refs.file.value = null;
+        } catch (e) {
+          window.alert(this.state.messages['importError']);
+        }
+      };
+      reader.readAsText(file);
+    }
+  }
+
   render() {
     const { pois, activePoiId, mode, fetching, center, zoom, map, messages, language,
       inscriptions, showHelp, innerCircleRadius, loadPoiMaxDistance, fontSize, addLineBreaks, preventUpturnedText } = this.state;
@@ -203,6 +229,7 @@ class Main extends React.Component {
     return (
       <Hourglass active={fetching}>
         <Help onClose={this.handleHideHelp.bind(this)} show={showHelp} messages={messages}/>
+        <input type="file" ref="file" onChange={this.load.bind(this)} style={{ display: 'none' }}/>
 
         <Navbar>
           <Navbar.Header>
@@ -213,7 +240,9 @@ class Main extends React.Component {
             <Nav>
               <NavDropdown title={<span><Glyphicon glyph="book"/> {t('project')}</span>} id="basic-nav-dropdown">
                 <NavItem onClick={this.handleNewProject.bind(this)}><Glyphicon glyph="file"/> {t('newProject')}</NavItem>
-                <NavItem onClick={this.handleSave.bind(this)} disabled={!observerPoi}><Glyphicon glyph="picture"/> {t('saveToposcope')}</NavItem>
+                <NavItem onClick={this.handleLoadProject.bind(this)}><Glyphicon glyph="open"/> {t('loadProject')}</NavItem>
+                <NavItem onClick={this.handleSaveProject.bind(this)}><Glyphicon glyph="save"/> {t('saveProject')}</NavItem>
+                <NavItem onClick={this.handleSaveImage.bind(this)} disabled={!observerPoi}><Glyphicon glyph="picture"/> {t('saveToposcope')}</NavItem>
               </NavDropdown>
               <NavItem active={mode === 'add_poi'} onClick={this.handleSetMode.bind(this, 'add_poi')} title={t('addPoi')}>
                 <Glyphicon glyph="map-marker"/><span className="hidden-sm hidden-md hidden-lg"> {t('addPoi')}</span>

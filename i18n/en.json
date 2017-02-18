@@ -23,6 +23,9 @@
   "preventUpturnedText": "Prevent text upside down",
   "project": "Project",
   "newProject": "New",
+  "loadProject": "Load",
+  "saveProject": "Save",
+  "importError": "Loading error.",
   "helpText": [
     "<p>This is a tool for creating <a href='https://en.wikipedia.org/wiki/Toposcope' target='_blank'>toposcopes</a>. You can find the project at <a href='https://github.com/FreemapSlovakia/toposcope-maker' target='_blank'>GitHub</a>.</p>",
     "<p>Functions:<ul>",
