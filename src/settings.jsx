@@ -12,14 +12,16 @@ class Settings extends React.Component {
     super(props);
     this.state = {
       loadPoiMaxDistance: props.loadPoiMaxDistance.toString(),
-      addLineBreaks: props.addLineBreaks
+      addLineBreaks: props.addLineBreaks,
+      onlyNearest: props.onlyNearest
     };
   }
 
   componentWillReceiveProps(newProps) {
     this.setState({
       loadPoiMaxDistance: newProps.loadPoiMaxDistance.toString(),
-      addLineBreaks: newProps.addLineBreaks
+      addLineBreaks: newProps.addLineBreaks,
+      onlyNearest: newProps.onlyNearest
     });
   }
 
@@ -37,8 +39,12 @@ class Settings extends React.Component {
     this.setState({ addLineBreaks: !this.state.addLineBreaks });
   }
 
+  handleOnlyNearestChange() {
+    this.setState({ onlyNearest: !this.state.onlyNearest });
+  }
+
   render() {
-    const { loadPoiMaxDistance, addLineBreaks } = this.state;
+    const { loadPoiMaxDistance, addLineBreaks, onlyNearest } = this.state;
     const { show, onClose, messages } = this.props;
     const t = key => messages[key] || key;
 
@@ -51,6 +57,10 @@ class Settings extends React.Component {
           <FormGroup>
             <ControlLabel>{t('loadPoiMaxDistance')}</ControlLabel>
             <FormControl type="number" min="1" max="20000" value={loadPoiMaxDistance} onChange={this.handleLoadPoiMaxDistanceChange.bind(this)}/>
+          </FormGroup>
+          <FormGroup>
+            <ControlLabel>{t('onlyNearest')}</ControlLabel>
+            <Checkbox checked={onlyNearest} onChange={this.handleOnlyNearestChange.bind(this)}/>
           </FormGroup>
           <FormGroup>
             <ControlLabel>{t('addLineBreaks')}</ControlLabel>
@@ -72,6 +82,7 @@ Settings.propTypes = {
   messages: React.PropTypes.object.isRequired,
   loadPoiMaxDistance:React.PropTypes.number.isRequired,
   addLineBreaks: React.PropTypes.bool.isRequired,
+  onlyNearest: React.PropTypes.bool.isRequired,
   onSave: React.PropTypes.func.isRequired
 };
 

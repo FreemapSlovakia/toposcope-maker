@@ -56,7 +56,8 @@ class Main extends React.Component {
       messages: readMessages(language),
       showHelp: false,
       showSettings: false,
-      loadPoiMaxDistance: 1000
+      loadPoiMaxDistance: 1000,
+      onlyNearest: true
     });
 
     if (toposcope) {
@@ -97,10 +98,11 @@ class Main extends React.Component {
       });
       this.nextId--;
     } else if (this.state.mode === 'load_peaks') {
+      const { loadPoiMaxDistance, language, addLineBreaks, onlyNearest } = this.state;
       const { lat, lng } = e.latlng;
-      const radius = this.state.loadPoiMaxDistance;
+      const radius = loadPoiMaxDistance > 0 && loadPoiMaxDistance <= 20000 ? loadPoiMaxDistance : 1000;
       this.setState({ fetching: true });
-      loadPeaks(lat, lng, radius > 0 && radius <= 20000 ? radius : 1000, this.state.language, this.state.addLineBreaks).then(pois => {
+      loadPeaks(lat, lng, radius, language, addLineBreaks, onlyNearest).then(pois => {
         if (this.state.pois.length === 0 && pois.length) {
           pois[0].observer = true;
         }
@@ -204,6 +206,8 @@ class Main extends React.Component {
     delete toSave.fetching;
     delete toSave.showHelp;
     delete toSave.showSettings;
+    delete toSave.onlyNearest;
+    delete toSave.loadPoiMaxDistance;
     delete toSave.mode;
 
     FileSaver.saveAs(new Blob([ JSON.stringify(toSave) ], { type: 'application/json' }), 'toposcope.json');
@@ -235,7 +239,9 @@ class Main extends React.Component {
 
   render() {
     const { pois, activePoiId, mode, fetching, center, zoom, map, messages, language,
-      inscriptions, showHelp, showSettings, innerCircleRadius, loadPoiMaxDistance, fontSize, addLineBreaks, preventUpturnedText } = this.state;
+      inscriptions, showHelp, showSettings, innerCircleRadius, loadPoiMaxDistance, onlyNearest,
+      fontSize, addLineBreaks, preventUpturnedText } = this.state;
+
     const activePoi = pois.find(({ id }) => id === activePoiId);
     const observerPoi = pois.find(({ observer }) => observer);
     const t = key => messages[key] || key;
@@ -246,7 +252,9 @@ class Main extends React.Component {
         <Help onClose={this.handleHideHelp.bind(this)} show={showHelp} messages={messages}/>
         <Settings onClose={this.handleCancelSettings.bind(this)} onSave={this.handleSaveSettings.bind(this)}
           show={showSettings} messages={messages}
-          loadPoiMaxDistance={loadPoiMaxDistance} addLineBreaks={addLineBreaks}/>
+          loadPoiMaxDistance={loadPoiMaxDistance}
+          addLineBreaks={addLineBreaks}
+          onlyNearest={onlyNearest}/>
 
         <input type="file" ref="file" onChange={this.load.bind(this)} style={{ display: 'none' }}/>
 
@@ -267,7 +275,7 @@ class Main extends React.Component {
                 <Glyphicon glyph="map-marker"/><span className="hidden-sm hidden-md hidden-lg"> {t('addPoi')}</span>
               </NavItem>
               <NavItem active={mode === 'load_peaks'} onClick={this.handleSetMode.bind(this, 'load_peaks')} title={t('loadPeaks')}>
-                <Glyphicon glyph="triangle-top"/><span className="hidden-sm hidden-md hidden-lg"> {t('loadPeaks')}</span>
+                <Glyphicon glyph="record"/><span className="hidden-sm hidden-md hidden-lg"> {t('loadPeaks')}</span>
               </NavItem>
               <NavItem active={mode === 'move_poi'} onClick={this.handleSetMode.bind(this, 'move_poi')} title={t('move')}>
                 <Glyphicon glyph="move"/><span className="hidden-sm hidden-md hidden-lg"> {t('move')}</span>
@@ -277,7 +285,7 @@ class Main extends React.Component {
               </NavItem>
               <NavItem onClick={this.handleShowSettings.bind(this)}><Glyphicon glyph="wrench"/> {t('settings')}</NavItem>
               <NavItem onClick={this.handleShowHelp.bind(this)}><Glyphicon glyph="question-sign"/> {t('help')}</NavItem>
-              <NavDropdown title={<span><Glyphicon glyph="flag"/> {t('language')}</span>} id="basic-nav-dropdown">
+              <NavDropdown title={<span><Glyphicon glyph="globe"/> {t('language')}</span>} id="basic-nav-dropdown">
                 {Object.keys(languages).map(code =>
                   <MenuItem onClick={this.handleSetLanguage.bind(this, code)} key={code}>
                     {languages[code]}{language === code ? ' ✓' : ''}
