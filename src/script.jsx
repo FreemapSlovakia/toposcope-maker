@@ -3,6 +3,7 @@ const ReactDOM = require('react-dom');
 const { Map, TileLayer, Marker, LayersControl } = require('react-leaflet');
 const Toposcope = require('./toposcope.jsx');
 const Help = require('./help.jsx');
+const Settings = require('./settings.jsx');
 const Hourglass = require('./hourglass.jsx');
 const createMarker = require('./markers.js');
 const loadPeaks = require('./poiLoader.js');
@@ -54,6 +55,7 @@ class Main extends React.Component {
       language,
       messages: readMessages(language),
       showHelp: false,
+      showSettings: false,
       loadPoiMaxDistance: 1000
     });
 
@@ -69,6 +71,7 @@ class Main extends React.Component {
     delete toSave.messages;
     delete toSave.fetching;
     delete toSave.showHelp;
+    delete toSave.showSettings;
     localStorage.setItem(localStorageName, JSON.stringify(toSave));
   }
 
@@ -95,9 +98,9 @@ class Main extends React.Component {
       this.nextId--;
     } else if (this.state.mode === 'load_peaks') {
       const { lat, lng } = e.latlng;
-      const radius = parseFloat(this.state.loadPoiMaxDistance);
+      const radius = this.state.loadPoiMaxDistance;
       this.setState({ fetching: true });
-      loadPeaks(lat, lng, !isNaN(radius) && radius > 0 && radius <= 20000 ? radius : 1000, this.state.language, this.state.addLineBreaks).then(pois => {
+      loadPeaks(lat, lng, radius > 0 && radius <= 20000 ? radius : 1000, this.state.language, this.state.addLineBreaks).then(pois => {
         if (this.state.pois.length === 0 && pois.length) {
           pois[0].observer = true;
         }
@@ -158,6 +161,18 @@ class Main extends React.Component {
     this.setState({ showHelp: false });
   }
 
+  handleShowSettings() {
+    this.setState({ showSettings: true });
+  }
+
+  handleCancelSettings() {
+    this.setState({ showSettings: false });
+  }
+
+  handleSaveSettings(settings) {
+    this.setState(Object.assign({ showSettings: false }, settings));
+  }
+
   handleObserverChange() {
     const activePoi = this.state.pois.find(({ id }) => id === this.state.activePoiId);
     this.setState({ pois: [
@@ -170,16 +185,8 @@ class Main extends React.Component {
     this.setState({ innerCircleRadius: e.target.value });
   }
 
-  handleLoadPoiMaxDistanceChange(e) {
-    this.setState({ loadPoiMaxDistance: e.target.value });
-  }
-
   handleFontSizeChange(e) {
     this.setState({ fontSize: e.target.value });
-  }
-
-  handleAddLineBreaksChange() {
-    this.setState({ addLineBreaks: !this.state.addLineBreaks });
   }
 
   handlePreventUpturnedTextChange() {
@@ -196,6 +203,7 @@ class Main extends React.Component {
     delete toSave.messages;
     delete toSave.fetching;
     delete toSave.showHelp;
+    delete toSave.showSettings;
     delete toSave.mode;
 
     FileSaver.saveAs(new Blob([ JSON.stringify(toSave) ], { type: 'application/json' }), 'toposcope.json');
@@ -227,7 +235,7 @@ class Main extends React.Component {
 
   render() {
     const { pois, activePoiId, mode, fetching, center, zoom, map, messages, language,
-      inscriptions, showHelp, innerCircleRadius, loadPoiMaxDistance, fontSize, addLineBreaks, preventUpturnedText } = this.state;
+      inscriptions, showHelp, showSettings, innerCircleRadius, loadPoiMaxDistance, fontSize, addLineBreaks, preventUpturnedText } = this.state;
     const activePoi = pois.find(({ id }) => id === activePoiId);
     const observerPoi = pois.find(({ observer }) => observer);
     const t = key => messages[key] || key;
@@ -236,6 +244,10 @@ class Main extends React.Component {
     return (
       <Hourglass active={fetching}>
         <Help onClose={this.handleHideHelp.bind(this)} show={showHelp} messages={messages}/>
+        <Settings onClose={this.handleCancelSettings.bind(this)} onSave={this.handleSaveSettings.bind(this)}
+          show={showSettings} messages={messages}
+          loadPoiMaxDistance={loadPoiMaxDistance} addLineBreaks={addLineBreaks}/>
+
         <input type="file" ref="file" onChange={this.load.bind(this)} style={{ display: 'none' }}/>
 
         <Navbar>
@@ -263,6 +275,7 @@ class Main extends React.Component {
               <NavItem active={mode === 'delete_poi'} onClick={this.handleSetMode.bind(this, 'delete_poi')} title={t('delete')}>
                 <Glyphicon glyph="remove"/><span className="hidden-sm hidden-md hidden-lg"> {t('delete')}</span>
               </NavItem>
+              <NavItem onClick={this.handleShowSettings.bind(this)}><Glyphicon glyph="wrench"/> {t('settings')}</NavItem>
               <NavItem onClick={this.handleShowHelp.bind(this)}><Glyphicon glyph="question-sign"/> {t('help')}</NavItem>
               <NavDropdown title={<span><Glyphicon glyph="flag"/> {t('language')}</span>} id="basic-nav-dropdown">
                 {Object.keys(languages).map(code =>
@@ -336,14 +349,6 @@ class Main extends React.Component {
                 <FormGroup>
                   <ControlLabel>{t('preventUpturnedText')}</ControlLabel>
                   <Checkbox checked={preventUpturnedText} onChange={this.handlePreventUpturnedTextChange.bind(this)}/>
-                </FormGroup>
-                <FormGroup>
-                  <ControlLabel>{t('loadPoiMaxDistance')}</ControlLabel>
-                  <FormControl type="number" min="1" max="20000" value={loadPoiMaxDistance} onChange={this.handleLoadPoiMaxDistanceChange.bind(this)}/>
-                </FormGroup>
-                <FormGroup>
-                  <ControlLabel>{t('addLineBreaks')}</ControlLabel>
-                  <Checkbox checked={addLineBreaks} onChange={this.handleAddLineBreaksChange.bind(this)}/>
                 </FormGroup>
               </Panel>
             </div>

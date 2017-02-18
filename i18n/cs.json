@@ -26,6 +26,9 @@
   "loadProject": "Načti",
   "saveProject": "Ulož",
   "importError": "Chyba načtení.",
+  "save": "Ulož",
+  "cancel": "Zruš",
+  "settings": "Nastavení",
   "helpText": [
     "<p>Nástroj slouží pro vytváření <a href='https://en.wikipedia.org/wiki/Toposcope' target='_blank'>výhledových ružic</a>. Projekt najdete na <a href='https://github.com/FreemapSlovakia/toposcope-maker' target='_blank'>GitHubu</a>.</p>",
     "<p>Popis funkcí:<ul>",
