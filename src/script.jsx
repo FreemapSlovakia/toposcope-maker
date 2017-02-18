@@ -328,8 +328,10 @@ class Main extends React.Component {
             <div className="col-md-6" ref="toposcope">
               {observerPoi &&
                 <Toposcope pois={pois} messages={messages} inscriptions={inscriptions} language={language}
-                  innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25} fontSize={parseFloat(fontSize) || 4}
-                  preventUpturnedText={preventUpturnedText}/>
+                  innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25}
+                  fontSize={parseFloat(fontSize) || 4}
+                  preventUpturnedText={preventUpturnedText}
+                  onClick={this.handlePoiClick.bind(this)}/>
               }
             </div>
           </div>

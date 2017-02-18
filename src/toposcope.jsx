@@ -2,7 +2,7 @@ const React = require('react');
 
 module.exports = Toposcope;
 
-function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscriptions, language, fontSize, preventUpturnedText }) {
+function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscriptions, language, fontSize, preventUpturnedText, onClick }) {
   const t = key => messages[key] || key;
   const observerPoi = pois.find(({ observer }) => observer);
   const poisAround = pois.filter(poi => poi !== observerPoi).map(poi => Object.assign({}, poi));
@@ -62,18 +62,19 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
         </text>
       )}
 
-      {poisAround.map(({ id }) => <use key={id} xlinkHref={`#p${id}`} className="line"/>)}
+      {poisAround.map(({ id }) => <use key={id} xlinkHref={`#p${id}`} className="line clickable" onClick={onClick.bind(null, id)}/>)}
 
       {
         poisAround.map(({ id, lat, lng, text, reversed }) => {
           const lines = text.replace('{d}', formatDistance(L.latLng(lat, lng).distanceTo(L.latLng(observerPoi.lat, observerPoi.lng)))).split('\n');
+          const clickHandler = onClick.bind(null, id);
           return [
-            <text key={'x' + id} className="lineText">
+            <text key={'x' + id} className="lineText clickable" onClick={clickHandler}>
               <textPath xlinkHref={`#p${id}`} startOffset={reversed ? '0%' : '100%'} textAnchor={reversed ? 'start' : 'end'}>
                 <tspan x="0" dy="-2" xmlSpace="preserve">&#160;&#160;&#160;&#160;{lines[0]}&#160;&#160;&#160;&#160;</tspan>
               </textPath>
             </text>,
-            lines[1] ? <text key={id} className="lineText">
+            lines[1] ? <text key={id} className="lineText clickable" onClick={clickHandler}>
               <textPath xlinkHref={`#p${id}`} startOffset={reversed ? '0%' : '100%'} textAnchor={reversed ? 'start' : 'end'}>
                 <tspan x="0" dy="5" xmlSpace="preserve">&#160;&#160;&#160;&#160;{lines[1]}&#160;&#160;&#160;&#160;</tspan>
               </textPath>
@@ -85,7 +86,7 @@ function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscrip
       <circle cx="0" cy="0" r={outerRadius} className="line"/>
       <circle cx="0" cy="0" r={innerRadius} className="line"/>
 
-      <text x="0" y={-1 - innerTexts.length * 3} className="lineText">
+      <text x="0" y={-1 - innerTexts.length * 3} className="lineText clickable" onClick={onClick.bind(null, observerPoi.id)}>
         {innerTexts.map((line, i) => <tspan key={i} textAnchor="middle" x="0" dy="6">{line}</tspan>)}
       </text>
     </svg>
@@ -108,7 +109,8 @@ Toposcope.propTypes = {
   pois: React.PropTypes.array.isRequired,
   title: React.PropTypes.string,
   language: React.PropTypes.string.isRequired,
-  preventUpturnedText: React.PropTypes.bool
+  preventUpturnedText: React.PropTypes.bool,
+  onClick: React.PropTypes.func
 };
 
 const PI2 = 2 * Math.PI;
