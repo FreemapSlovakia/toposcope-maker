@@ -26,6 +26,8 @@ const mapDefinitions = require('./mapDefinitions');
 
 const localStorageName = 'toposcope1';
 
+const languages = { en: 'English', sk: 'Slovensky', cs: 'Česky' };
+
 class Main extends React.Component {
 
   constructor(props) {
@@ -33,7 +35,7 @@ class Main extends React.Component {
 
     const toposcope = JSON.parse(localStorage.getItem(localStorageName));
     const language = toposcope && toposcope.language ||
-      navigator.languages.map(language => language.split('-')[0]).find(language => language === 'en' || language === 'sk' || language === 'cz')
+      navigator.languages.map(language => language.split('-')[0]).find(language => languages[language])
 
     this.state = {
       map: 'OpenStreetMap Mapnik',
@@ -211,9 +213,11 @@ class Main extends React.Component {
               <NavItem onClick={this.handleSave.bind(this)} disabled={!observerPoi}>{t('saveToposcope')}</NavItem>
               <NavItem onClick={this.handleShowHelp.bind(this)}>{t('help')}</NavItem>
               <NavDropdown title={t('language')} id="basic-nav-dropdown">
-                <MenuItem onClick={this.handleSetLanguage.bind(this, 'en')}>English{language === 'en' ? ' ✓' : ''}</MenuItem>
-                <MenuItem onClick={this.handleSetLanguage.bind(this, 'sk')}>Slovensky{language === 'sk' ? ' ✓' : ''}</MenuItem>
-                <MenuItem onClick={this.handleSetLanguage.bind(this, 'cz')}>Česky{language === 'cz' ? ' ✓' : ''}</MenuItem>
+                {Object.keys(languages).map(code =>
+                  <MenuItem onClick={this.handleSetLanguage.bind(this, code)}>
+                    {languages[code]}{language === code ? ' ✓' : ''}
+                  </MenuItem>)
+                }
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>
@@ -305,7 +309,7 @@ class Main extends React.Component {
 }
 
 function readMessages(language) {
-  const messages = require(`../i18n/${language}.json`);
+  const messages = Object.assign({}, require(`../i18n/en.json`), require(`../i18n/${language}.json`));
   Object.keys(messages).forEach(function (key) {
     const message = messages[key];
     if (Array.isArray(message)) {
