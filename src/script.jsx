@@ -47,8 +47,8 @@ class Main extends React.Component {
 
     this.state = Object.assign({}, cleanState, {
       map: 'OpenStreetMap Mapnik',
-      center: L.latLng(48.8, 19),
-      zoom: 9,
+      center: L.latLng(0, 0),
+      zoom: 1,
       mode: '',
       fetching: false,
       language,
