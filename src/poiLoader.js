@@ -12,6 +12,6 @@
     body: 'data=' + encodeURIComponent(query)
   }).then(res => res.json()).then(data =>
     data.elements.map(({ id, lat, lon, tags: { name, ele } }) =>
-      ({ id, lat, lng: lon, text: `${name || '???'} (${formatEle(ele) || '???'} m)${addLineBreaks ? '\n' : ', '}{d} km`, observer: false }))
+      ({ id, lat, lng: lon, text: `${name || '???'}${ele ? ` (${formatEle(ele)} m)` : ''}${addLineBreaks ? '\n' : ', '}{d} km`, observer: false }))
   );
 }
