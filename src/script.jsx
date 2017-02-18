@@ -28,6 +28,12 @@ const localStorageName = 'toposcope1';
 
 const languages = { en: 'English', sk: 'Slovensky', cs: 'Česky' };
 
+const cleanState = {
+  pois: [],
+  activePoiId: null,
+  inscriptions: [ '', '{a}', '', '' ]
+};
+
 class Main extends React.Component {
 
   constructor(props) {
@@ -37,24 +43,17 @@ class Main extends React.Component {
     const language = toposcope && toposcope.language ||
       navigator.languages.map(language => language.split('-')[0]).find(language => languages[language])
 
-    this.state = {
+    this.state = Object.assign({}, cleanState, {
       map: 'OpenStreetMap Mapnik',
       center: L.latLng(48.8, 19),
       zoom: 9,
-      pois: [],
       mode: '',
-      activePoiId: null,
       fetching: false,
       language,
-      inscriptions: [ '', '{a}', '', '' ],
       messages: readMessages(language),
       showHelp: false,
-      innerCircleRadius: 25,
-      loadPoiMaxDistance: 1000,
-      fontSize: 4,
-      addLineBreaks: false,
-      preventUpturnedText: false
-    };
+      loadPoiMaxDistance: 1000
+    });
 
     if (toposcope) {
       Object.assign(this.state, toposcope);
@@ -187,6 +186,10 @@ class Main extends React.Component {
     this.setState({ preventUpturnedText: !this.state.preventUpturnedText });
   }
 
+  handleNewProject() {
+    this.setState(cleanState);
+  }
+
   render() {
     const { pois, activePoiId, mode, fetching, center, zoom, map, messages, language,
       inscriptions, showHelp, innerCircleRadius, loadPoiMaxDistance, fontSize, addLineBreaks, preventUpturnedText } = this.state;
@@ -206,11 +209,14 @@ class Main extends React.Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
+              <NavDropdown title={t('project')} id="basic-nav-dropdown">
+                <NavItem onClick={this.handleNewProject.bind(this)}>{t('newProject')}</NavItem>
+                <NavItem onClick={this.handleSave.bind(this)} disabled={!observerPoi}>{t('saveToposcope')}</NavItem>
+              </NavDropdown>
               <NavItem active={mode === 'add_poi'} onClick={this.handleSetMode.bind(this, 'add_poi')}>{t('addPoi')}</NavItem>
               <NavItem active={mode === 'load_peaks'} onClick={this.handleSetMode.bind(this, 'load_peaks')}>{t('loadPeaks')}</NavItem>
               <NavItem active={mode === 'move_poi'} onClick={this.handleSetMode.bind(this, 'move_poi')}>{t('move')}</NavItem>
               <NavItem active={mode === 'delete_poi'} onClick={this.handleSetMode.bind(this, 'delete_poi')}>{t('delete')}</NavItem>
-              <NavItem onClick={this.handleSave.bind(this)} disabled={!observerPoi}>{t('saveToposcope')}</NavItem>
               <NavItem onClick={this.handleShowHelp.bind(this)}>{t('help')}</NavItem>
               <NavDropdown title={t('language')} id="basic-nav-dropdown">
                 {Object.keys(languages).map(code =>
