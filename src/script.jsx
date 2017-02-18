@@ -17,6 +17,7 @@ const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 const MenuItem = require('react-bootstrap/lib/MenuItem');
 const Checkbox = require('react-bootstrap/lib/Checkbox');
 const Glyphicon = require('react-bootstrap/lib/Glyphicon');
+const Panel = require('react-bootstrap/lib/Panel');
 
 const poiIcon = createMarker('#ddf');
 const observerIcon = createMarker('#f88');
@@ -240,71 +241,79 @@ class Main extends React.Component {
         <div className="container">
           <div className="row">
             <div className="col-md-6">
-              <Map style={{ width: '100%', height: '500px' }} center={center} zoom={zoom}
-                  onMove={this.handleMapMove.bind(this)}
-                  onClick={this.handleMapClick.bind(this)}
-                  onZoom={this.handleMapZoom.bind(this)}>
+              <Panel>
+                <Map style={{ width: '100%', height: '500px' }} center={center} zoom={zoom}
+                    onMove={this.handleMapMove.bind(this)}
+                    onClick={this.handleMapClick.bind(this)}
+                    onZoom={this.handleMapZoom.bind(this)}>
 
-                <LayersControl position="topright">
-                  {
-                    mapDefinitions.map(({ name, url, attribution, maxZoom, minZoom }) =>
-                      <LayersControl.BaseLayer key={name} name={name} checked={map === name}>
-                        <TileLayer attribution={attribution} url={url} onAdd={this.handleMapChange.bind(this, name)}
-                          maxZoom={maxZoom} minZoom={minZoom}/>
-                      </LayersControl.BaseLayer>
-                    )
-                  }
-                </LayersControl>
+                  <LayersControl position="topright">
+                    {
+                      mapDefinitions.map(({ name, url, attribution, maxZoom, minZoom }) =>
+                        <LayersControl.BaseLayer key={name} name={name} checked={map === name}>
+                          <TileLayer attribution={attribution} url={url} onAdd={this.handleMapChange.bind(this, name)}
+                            maxZoom={maxZoom} minZoom={minZoom}/>
+                        </LayersControl.BaseLayer>
+                      )
+                    }
+                  </LayersControl>
 
-                {pois.map(({ id, lat, lng, observer }) =>
-                  <Marker key={id} position={[ lat, lng ]}
-                    onClick={this.handlePoiClick.bind(this, id)}
-                    onDrag={this.handlePoiDrag.bind(this, id)}
-                    icon={observer ? (id === activePoiId ? activeObserverIcon : observerIcon) : id === activePoiId ? activePoiIcon : poiIcon}
-                    draggable={mode === 'move_poi'}/>
-                )}
-              </Map>
+                  {pois.map(({ id, lat, lng, observer }) =>
+                    <Marker key={id} position={[ lat, lng ]}
+                      onClick={this.handlePoiClick.bind(this, id)}
+                      onDrag={this.handlePoiDrag.bind(this, id)}
+                      icon={observer ? (id === activePoiId ? activeObserverIcon : observerIcon) : id === activePoiId ? activePoiIcon : poiIcon}
+                      draggable={mode === 'move_poi'}/>
+                  )}
+                </Map>
+              </Panel>
             </div>
             <div className="col-md-6" ref="toposcope">
-              {observerPoi && <Toposcope pois={pois} messages={messages} inscriptions={inscriptions} language={language}
-                innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25} fontSize={parseFloat(fontSize) || 4}
-                preventUpturnedText={preventUpturnedText}/>}
+              {observerPoi &&
+                <Toposcope pois={pois} messages={messages} inscriptions={inscriptions} language={language}
+                  innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25} fontSize={parseFloat(fontSize) || 4}
+                  preventUpturnedText={preventUpturnedText}/>
+              }
             </div>
           </div>
           <div className="row">
             <div className="col-md-4">
-              {[ [ 'south', 'east' ], [ 'south', 'west' ], [ 'north', 'west' ], [ 'north', 'east' ] ].map(([ c1, c2 ], i) =>
-                <FormGroup key={i}>
-                  <ControlLabel>{t('inscription')} {t(c1)}–{t(c2)}</ControlLabel>
-                  <FormControl type="text" value={inscriptions[i]} onChange={this.handleCustomTextChange.bind(this, i)}/>
-                </FormGroup>
-              )}
+              <Panel>
+                {[ [ 'south', 'east' ], [ 'south', 'west' ], [ 'north', 'west' ], [ 'north', 'east' ] ].map(([ c1, c2 ], i) =>
+                  <FormGroup key={i}>
+                    <ControlLabel>{t('inscription')} {t(c1)}–{t(c2)}</ControlLabel>
+                    <FormControl type="text" value={inscriptions[i]} onChange={this.handleCustomTextChange.bind(this, i)}/>
+                  </FormGroup>
+                )}
+              </Panel>
             </div>
             <div className="col-md-4">
-              <FormGroup>
-                <ControlLabel>{t('innerCircleRadius')}</ControlLabel>
-                <FormControl type="number" min="0" max="80" value={innerCircleRadius} onChange={this.handleInnerCircleRadiusChange.bind(this)}/>
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>{t('fontSize')}</ControlLabel>
-                <FormControl type="number" min="0" max="10" step="0.1" value={fontSize} onChange={this.handleFontSizeChange.bind(this)}/>
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>{t('preventUpturnedText')}</ControlLabel>
-                <Checkbox checked={preventUpturnedText} onChange={this.handlePreventUpturnedTextChange.bind(this)}/>
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>{t('loadPoiMaxDistance')}</ControlLabel>
-                <FormControl type="number" min="1" max="20000" value={loadPoiMaxDistance} onChange={this.handleLoadPoiMaxDistanceChange.bind(this)}/>
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>{t('addLineBreaks')}</ControlLabel>
-                <Checkbox checked={addLineBreaks} onChange={this.handleAddLineBreaksChange.bind(this)}/>
-              </FormGroup>
+              <Panel>
+                <FormGroup>
+                  <ControlLabel>{t('innerCircleRadius')}</ControlLabel>
+                  <FormControl type="number" min="0" max="80" value={innerCircleRadius} onChange={this.handleInnerCircleRadiusChange.bind(this)}/>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>{t('fontSize')}</ControlLabel>
+                  <FormControl type="number" min="0" max="10" step="0.1" value={fontSize} onChange={this.handleFontSizeChange.bind(this)}/>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>{t('preventUpturnedText')}</ControlLabel>
+                  <Checkbox checked={preventUpturnedText} onChange={this.handlePreventUpturnedTextChange.bind(this)}/>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>{t('loadPoiMaxDistance')}</ControlLabel>
+                  <FormControl type="number" min="1" max="20000" value={loadPoiMaxDistance} onChange={this.handleLoadPoiMaxDistanceChange.bind(this)}/>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>{t('addLineBreaks')}</ControlLabel>
+                  <Checkbox checked={addLineBreaks} onChange={this.handleAddLineBreaksChange.bind(this)}/>
+                </FormGroup>
+              </Panel>
             </div>
             <div className="col-md-4">
               {activePoi &&
-                <div>
+                <Panel>
                   <FormGroup>
                     <ControlLabel>{t('label')}</ControlLabel>
                     <FormControl componentClass="textarea" rows="2" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder={t('labelPlaceholder')}/>
@@ -313,7 +322,7 @@ class Main extends React.Component {
                     <ControlLabel>{t('observer')}</ControlLabel>
                     <Checkbox checked={!!activePoi.observer} onChange={this.handleObserverChange.bind(this)}/>
                   </FormGroup>
-                </div>
+                </Panel>
               }
             </div>
           </div>
