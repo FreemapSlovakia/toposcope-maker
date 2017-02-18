@@ -191,7 +191,14 @@ class Main extends React.Component {
   }
 
   handleSaveProject() {
-    FileSaver.saveAs(new Blob([ localStorage.getItem(localStorageName) ], { type: 'application/json' }), 'toposcope.json');
+    const toSave = Object.assign({}, this.state);
+    delete toSave.language;
+    delete toSave.messages;
+    delete toSave.fetching;
+    delete toSave.showHelp;
+    delete toSave.mode;
+
+    FileSaver.saveAs(new Blob([ JSON.stringify(toSave) ], { type: 'application/json' }), 'toposcope.json');
   }
 
   handleLoadProject() {
