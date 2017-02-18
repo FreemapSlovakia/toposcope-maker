@@ -28,3 +28,7 @@
 .modal {
   display: block;
 }
+
+.dropdown-menu {
+  z-index: 10000;
+}

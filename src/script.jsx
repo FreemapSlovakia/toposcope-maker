@@ -16,6 +16,7 @@ const FormControl = require('react-bootstrap/lib/FormControl');
 const NavDropdown = require('react-bootstrap/lib/NavDropdown');
 const MenuItem = require('react-bootstrap/lib/MenuItem');
 const Checkbox = require('react-bootstrap/lib/Checkbox');
+const Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 const poiIcon = createMarker('#ddf');
 const observerIcon = createMarker('#f88');
@@ -209,18 +210,26 @@ class Main extends React.Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <NavDropdown title={t('project')} id="basic-nav-dropdown">
-                <NavItem onClick={this.handleNewProject.bind(this)}>{t('newProject')}</NavItem>
-                <NavItem onClick={this.handleSave.bind(this)} disabled={!observerPoi}>{t('saveToposcope')}</NavItem>
+              <NavDropdown title={<span><Glyphicon glyph="book"/> {t('project')}</span>} id="basic-nav-dropdown">
+                <NavItem onClick={this.handleNewProject.bind(this)}><Glyphicon glyph="file"/> {t('newProject')}</NavItem>
+                <NavItem onClick={this.handleSave.bind(this)} disabled={!observerPoi}><Glyphicon glyph="picture"/> {t('saveToposcope')}</NavItem>
               </NavDropdown>
-              <NavItem active={mode === 'add_poi'} onClick={this.handleSetMode.bind(this, 'add_poi')}>{t('addPoi')}</NavItem>
-              <NavItem active={mode === 'load_peaks'} onClick={this.handleSetMode.bind(this, 'load_peaks')}>{t('loadPeaks')}</NavItem>
-              <NavItem active={mode === 'move_poi'} onClick={this.handleSetMode.bind(this, 'move_poi')}>{t('move')}</NavItem>
-              <NavItem active={mode === 'delete_poi'} onClick={this.handleSetMode.bind(this, 'delete_poi')}>{t('delete')}</NavItem>
-              <NavItem onClick={this.handleShowHelp.bind(this)}>{t('help')}</NavItem>
-              <NavDropdown title={t('language')} id="basic-nav-dropdown">
+              <NavItem active={mode === 'add_poi'} onClick={this.handleSetMode.bind(this, 'add_poi')} title={t('addPoi')}>
+                <Glyphicon glyph="map-marker"/><span className="hidden-sm hidden-md hidden-lg"> {t('addPoi')}</span>
+              </NavItem>
+              <NavItem active={mode === 'load_peaks'} onClick={this.handleSetMode.bind(this, 'load_peaks')} title={t('loadPeaks')}>
+                <Glyphicon glyph="triangle-top"/><span className="hidden-sm hidden-md hidden-lg"> {t('loadPeaks')}</span>
+              </NavItem>
+              <NavItem active={mode === 'move_poi'} onClick={this.handleSetMode.bind(this, 'move_poi')} title={t('move')}>
+                <Glyphicon glyph="move"/><span className="hidden-sm hidden-md hidden-lg"> {t('move')}</span>
+              </NavItem>
+              <NavItem active={mode === 'delete_poi'} onClick={this.handleSetMode.bind(this, 'delete_poi')} title={t('delete')}>
+                <Glyphicon glyph="remove"/><span className="hidden-sm hidden-md hidden-lg"> {t('delete')}</span>
+              </NavItem>
+              <NavItem onClick={this.handleShowHelp.bind(this)}><Glyphicon glyph="question-sign"/> {t('help')}</NavItem>
+              <NavDropdown title={<span><Glyphicon glyph="flag"/> {t('language')}</span>} id="basic-nav-dropdown">
                 {Object.keys(languages).map(code =>
-                  <MenuItem onClick={this.handleSetLanguage.bind(this, code)}>
+                  <MenuItem onClick={this.handleSetLanguage.bind(this, code)} key={code}>
                     {languages[code]}{language === code ? ' ✓' : ''}
                   </MenuItem>)
                 }
