@@ -1,4 +1,4 @@
-  module.exports = function loadPeaks(lat, lng, distance = 5000, language, addLineBreaks, onlyNearest) {
+export default function loadPeaks(lat, lng, distance = 5000, language, addLineBreaks, onlyNearest) {
   const query = `[out:json][timeout:25];
     (
       node["natural"="peak"](around:${distance},${lat},${lng});

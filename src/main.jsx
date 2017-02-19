@@ -1,29 +1,28 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const { Map, TileLayer, Marker, LayersControl } = require('react-leaflet');
-const FileSaver = require('file-saver');
-const Navbar = require('react-bootstrap/lib/Navbar');
-const Nav = require('react-bootstrap/lib/Nav');
-const NavItem = require('react-bootstrap/lib/NavItem');
-const FormGroup = require('react-bootstrap/lib/FormGroup');
-const ControlLabel = require('react-bootstrap/lib/ControlLabel');
-const FormControl = require('react-bootstrap/lib/FormControl');
-const NavDropdown = require('react-bootstrap/lib/NavDropdown');
-const MenuItem = require('react-bootstrap/lib/MenuItem');
-const Checkbox = require('react-bootstrap/lib/Checkbox');
-const Glyphicon = require('react-bootstrap/lib/Glyphicon');
-const Panel = require('react-bootstrap/lib/Panel');
-const ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
-const Button = require('react-bootstrap/lib/Button');
+import React from 'react';
+import { Map, TileLayer, Marker, LayersControl } from 'react-leaflet';
+import FileSaver from 'file-saver';
+import Navbar from 'react-bootstrap/lib/Navbar';
+import Nav from 'react-bootstrap/lib/Nav';
+import NavItem from 'react-bootstrap/lib/NavItem';
+import FormGroup from 'react-bootstrap/lib/FormGroup';
+import ControlLabel from 'react-bootstrap/lib/ControlLabel';
+import FormControl from 'react-bootstrap/lib/FormControl';
+import NavDropdown from 'react-bootstrap/lib/NavDropdown';
+import MenuItem from 'react-bootstrap/lib/MenuItem';
+import Checkbox from 'react-bootstrap/lib/Checkbox';
+import Glyphicon from 'react-bootstrap/lib/Glyphicon';
+import Panel from 'react-bootstrap/lib/Panel';
+import ButtonGroup from 'react-bootstrap/lib/ButtonGroup';
+import Button from 'react-bootstrap/lib/Button';
 
-const Toposcope = require('./toposcope.jsx');
-const Help = require('./help.jsx');
-const Settings = require('./settings.jsx');
-const Hourglass = require('./hourglass.jsx');
-const createMarker = require('./markers.js');
-const loadPeaks = require('./poiLoader.js');
-const { languages, getBrowserLanguage, readMessages } = require('./i18n.js');
-const mapDefinitions = require('./mapDefinitions');
+import Toposcope from './toposcope.jsx';
+import Help from './help.jsx';
+import Settings from './settings.jsx';
+import Hourglass from './hourglass.jsx';
+import createMarker from './markers.js';
+import loadPeaks from './poiLoader.js';
+import { languages, getBrowserLanguage, readMessages } from './i18n.js';
+import mapDefinitions from './mapDefinitions';
 
 const poiIcon = createMarker('#ddf');
 const observerIcon = createMarker('#f88');
@@ -38,7 +37,7 @@ const cleanState = {
   inscriptions: [ '', '{a}', '', '' ]
 };
 
-class Main extends React.Component {
+export default class Main extends React.Component {
 
   constructor(props) {
     super(props);
@@ -370,5 +369,3 @@ class Main extends React.Component {
     );
   }
 }
-
-ReactDOM.render(<Main/>, document.getElementById('main'));

@@ -1,8 +1,6 @@
-const React = require('react');
+import React from 'react';
 
-module.exports = Toposcope;
-
-function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscriptions, language, fontSize, preventUpturnedText, onClick }) {
+export default function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscriptions, language, fontSize, preventUpturnedText, onClick }) {
   const t = key => messages[key] || key;
   const observerPoi = pois.find(({ observer }) => observer);
   const poisAround = pois.filter(poi => poi !== observerPoi).map(poi => Object.assign({}, poi));

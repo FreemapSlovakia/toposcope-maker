@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     name: 'OpenStreetMap Mapnik',
     url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',

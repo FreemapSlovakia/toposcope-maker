@@ -1,12 +1,12 @@
-const React = require('react');
-const Modal = require('react-bootstrap-modal');
-const FormGroup = require('react-bootstrap/lib/FormGroup');
-const ControlLabel = require('react-bootstrap/lib/ControlLabel');
-const FormControl = require('react-bootstrap/lib/FormControl');
-const Checkbox = require('react-bootstrap/lib/Checkbox');
-const Button = require('react-bootstrap/lib/Button');
+import React from 'react';
+import Modal from 'react-bootstrap-modal';
+import FormGroup from 'react-bootstrap/lib/FormGroup';
+import ControlLabel from 'react-bootstrap/lib/ControlLabel';
+import FormControl from 'react-bootstrap/lib/FormControl';
+import Checkbox from 'react-bootstrap/lib/Checkbox';
+import Button from 'react-bootstrap/lib/Button';
 
-class Settings extends React.Component {
+export default class Settings extends React.Component {
 
   constructor(props) {
     super(props);
@@ -85,5 +85,3 @@ Settings.propTypes = {
   onlyNearest: React.PropTypes.bool.isRequired,
   onSave: React.PropTypes.func.isRequired
 };
-
-module.exports = Settings;

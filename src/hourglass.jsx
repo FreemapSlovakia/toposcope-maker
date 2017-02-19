@@ -1,8 +1,6 @@
-const React = require('react');
+import React from 'react';
 
-module.exports = Hourglass;
-
-function Hourglass({ active, children }) {
+export default function Hourglass({ active, children }) {
   return (
     <div className={'hourglass' + (active ? ' hourglass-active' : '')}>{children}</div>
   );

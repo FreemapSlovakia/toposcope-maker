@@ -1,9 +1,7 @@
-const React = require('react');
-const Modal = require('react-bootstrap-modal');
+import React from 'react';
+import Modal from 'react-bootstrap-modal';
 
-module.exports = Help;
-
-function Help({ show, onClose, messages, language }) {
+export default function Help({ show, onClose, messages, language }) {
   const t = key => messages[key] || key;
 
   return (
