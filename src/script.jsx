@@ -74,11 +74,9 @@ class Main extends React.Component {
   }
 
   componentDidUpdate() {
-    const toSave = Object.assign({}, this.state);
-    delete toSave.messages;
-    delete toSave.fetching;
-    delete toSave.showHelp;
-    delete toSave.showSettings;
+    const toSave = {};
+    [ 'pois', 'activePoiId', 'inscriptions', 'map', 'center', 'zoom', 'mode', 'language', 'loadPoiMaxDistance', 'onlyNearest' ]
+      .forEach(prop => toSave[prop] = this.state[prop]);
     localStorage.setItem(localStorageName, JSON.stringify(toSave));
   }
 
@@ -175,20 +173,12 @@ class Main extends React.Component {
     this.setState({ inscriptions });
   }
 
-  handleShowHelp() {
-    this.setState({ showHelp: true });
+  handleHelpVisibility(showHelp) {
+    this.setState({ showHelp });
   }
 
-  handleHideHelp() {
-    this.setState({ showHelp: false });
-  }
-
-  handleShowSettings() {
-    this.setState({ showSettings: true });
-  }
-
-  handleCancelSettings() {
-    this.setState({ showSettings: false });
+  handleSettingsVisibility(showSettings) {
+    this.setState({ showSettings });
   }
 
   handleSaveSettings(settings) {
@@ -212,16 +202,9 @@ class Main extends React.Component {
   }
 
   handleSaveProject() {
-    const toSave = Object.assign({}, this.state);
-    delete toSave.language;
-    delete toSave.messages;
-    delete toSave.fetching;
-    delete toSave.showHelp;
-    delete toSave.showSettings;
-    delete toSave.onlyNearest;
-    delete toSave.loadPoiMaxDistance;
-    delete toSave.mode;
-
+    const toSave = {};
+    [ 'pois', 'activePoiId', 'inscriptions', 'map', 'center', 'zoom' ]
+      .forEach(prop => toSave[prop] = this.state[prop]);
     FileSaver.saveAs(new Blob([ JSON.stringify(toSave) ], { type: 'application/json' }), 'toposcope.json');
   }
 
@@ -271,8 +254,8 @@ class Main extends React.Component {
           }
         `}</style>
 
-      <Help onClose={this.handleHideHelp.bind(this)} show={showHelp} messages={messages} language={language}/>
-        <Settings onClose={this.handleCancelSettings.bind(this)} onSave={this.handleSaveSettings.bind(this)}
+      <Help onClose={this.handleHelpVisibility.bind(this, false)} show={showHelp} messages={messages} language={language}/>
+        <Settings onClose={this.handleSettingsVisibility.bind(this, false)} onSave={this.handleSaveSettings.bind(this)}
           show={showSettings} messages={messages}
           loadPoiMaxDistance={loadPoiMaxDistance}
           addLineBreaks={addLineBreaks}
@@ -293,8 +276,8 @@ class Main extends React.Component {
                 <NavItem onClick={this.handleSaveProject.bind(this)}><Glyphicon glyph="save"/> {t('saveProject')}</NavItem>
                 <NavItem onClick={this.handleSaveImage.bind(this)} disabled={!observerPoi}><Glyphicon glyph="picture"/> {t('saveToposcope')}</NavItem>
               </NavDropdown>
-              <NavItem onClick={this.handleShowSettings.bind(this)}><Glyphicon glyph="wrench"/> {t('settings')}</NavItem>
-              <NavItem onClick={this.handleShowHelp.bind(this)}><Glyphicon glyph="question-sign"/> {t('help')}</NavItem>
+              <NavItem onClick={this.handleSettingsVisibility.bind(this, true)}><Glyphicon glyph="wrench"/> {t('settings')}</NavItem>
+              <NavItem onClick={this.handleHelpVisibility.bind(this, true)}><Glyphicon glyph="question-sign"/> {t('help')}</NavItem>
               <NavDropdown title={<span><Glyphicon glyph="globe"/> {t('language')}</span>} id="basic-nav-dropdown">
                 {Object.keys(languages).map(code =>
                   <MenuItem onClick={this.handleSetLanguage.bind(this, code)} key={code}>
