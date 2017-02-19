@@ -85,27 +85,35 @@ class Main extends React.Component {
   }
 
   handlePoiClick(poiId) {
-    this.setState(this.state.mode === 'delete_poi' ?
+    this.setState(this.state.mode === 'deletePoi' ?
       { activePoiId: null, pois: [ ...this.state.pois.filter(({ id }) => id !== poiId) ] }
       : { activePoiId: poiId });
   }
 
   handleMapClick(e) {
-    if (this.state.mode === 'add_poi') {
+    if (this.state.mode === 'setObserver') {
+      const observer = this.state.pois.find(({ observer }) => observer);
       this.setState({
-        activePoiId: this.nextId,
-        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '{d} km', id: this.nextId, observer: this.state.pois.length === 0 } ]
+        activePoiId: observer ? observer.id : this.nextId,
+        pois: [
+          ...this.state.pois.filter(poi => poi !== observer),
+          observer ? Object.assign({}, observer, { lat: e.latlng.lat, lng: e.latlng.lng })
+            : { lat: e.latlng.lat, lng: e.latlng.lng, text: '{d} km', id: this.nextId, observer: true }
+        ]
       });
       this.nextId--;
-    } else if (this.state.mode === 'load_peaks') {
+    } else if (this.state.mode === 'addPoi') {
+      this.setState({
+        activePoiId: this.nextId,
+        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '{d} km', id: this.nextId, observer: false } ]
+      });
+      this.nextId--;
+    } else if (this.state.mode === 'loadPois') {
       const { loadPoiMaxDistance, language, addLineBreaks, onlyNearest } = this.state;
       const { lat, lng } = e.latlng;
       const radius = loadPoiMaxDistance > 0 && loadPoiMaxDistance <= 20000 ? loadPoiMaxDistance : 1000;
       this.setState({ fetching: true });
       loadPeaks(lat, lng, radius, language, addLineBreaks, onlyNearest).then(pois => {
-        if (this.state.pois.length === 0 && pois.length) {
-          pois[0].observer = true;
-        }
         this.setState({ activePoiId: null,
           pois: [ ...this.state.pois.filter(({ id1 }) => pois.find(({ id2 }) => id1 !== id2) !== -1), ...pois ] });
       }).catch().then(() => this.setState({ fetching: false }));
@@ -173,14 +181,6 @@ class Main extends React.Component {
 
   handleSaveSettings(settings) {
     this.setState(Object.assign({ showSettings: false }, settings));
-  }
-
-  handleObserverChange() {
-    const activePoi = this.state.pois.find(({ id }) => id === this.state.activePoiId);
-    this.setState({ pois: [
-      ...this.state.pois.filter(poi => poi !== activePoi).map(poi => Object.assign({}, poi, { observer: false })),
-      Object.assign({}, activePoi, { observer: !activePoi.observer })
-    ] });
   }
 
   handleInnerCircleRadiusChange(e) {
@@ -271,18 +271,12 @@ class Main extends React.Component {
                 <NavItem onClick={this.handleSaveProject.bind(this)}><Glyphicon glyph="save"/> {t('saveProject')}</NavItem>
                 <NavItem onClick={this.handleSaveImage.bind(this)} disabled={!observerPoi}><Glyphicon glyph="picture"/> {t('saveToposcope')}</NavItem>
               </NavDropdown>
-              <NavItem active={mode === 'add_poi'} onClick={this.handleSetMode.bind(this, 'add_poi')} title={t('addPoi')}>
-                <Glyphicon glyph="map-marker"/><span className="hidden-sm hidden-md hidden-lg"> {t('addPoi')}</span>
-              </NavItem>
-              <NavItem active={mode === 'load_peaks'} onClick={this.handleSetMode.bind(this, 'load_peaks')} title={t('loadPeaks')}>
-                <Glyphicon glyph="record"/><span className="hidden-sm hidden-md hidden-lg"> {t('loadPeaks')}</span>
-              </NavItem>
-              <NavItem active={mode === 'move_poi'} onClick={this.handleSetMode.bind(this, 'move_poi')} title={t('move')}>
-                <Glyphicon glyph="move"/><span className="hidden-sm hidden-md hidden-lg"> {t('move')}</span>
-              </NavItem>
-              <NavItem active={mode === 'delete_poi'} onClick={this.handleSetMode.bind(this, 'delete_poi')} title={t('delete')}>
-                <Glyphicon glyph="remove"/><span className="hidden-sm hidden-md hidden-lg"> {t('delete')}</span>
-              </NavItem>
+              {[ [ 'setObserver', 'eye-open' ], [ 'addPoi', 'map-marker' ], [ 'loadPois', 'record' ],
+                  [ 'movePoi', 'move' ], [ 'deletePoi', 'remove' ] ].map(([ m, icon ]) => (
+                <NavItem key={m} active={mode === m} onClick={this.handleSetMode.bind(this, m)} title={t(m)}>
+                  <Glyphicon glyph={icon}/><span className="hidden-sm hidden-md hidden-lg"> {t(m)}</span>
+                </NavItem>
+              ))}
               <NavItem onClick={this.handleShowSettings.bind(this)}><Glyphicon glyph="wrench"/> {t('settings')}</NavItem>
               <NavItem onClick={this.handleShowHelp.bind(this)}><Glyphicon glyph="question-sign"/> {t('help')}</NavItem>
               <NavDropdown title={<span><Glyphicon glyph="globe"/> {t('language')}</span>} id="basic-nav-dropdown">
@@ -320,7 +314,7 @@ class Main extends React.Component {
                       onClick={this.handlePoiClick.bind(this, id)}
                       onDrag={this.handlePoiDrag.bind(this, id)}
                       icon={observer ? (id === activePoiId ? activeObserverIcon : observerIcon) : id === activePoiId ? activePoiIcon : poiIcon}
-                      draggable={mode === 'move_poi'}/>
+                      draggable={mode === 'movePoi'}/>
                   )}
                 </Map>
               </Panel>
@@ -368,10 +362,6 @@ class Main extends React.Component {
                   <FormGroup>
                     <ControlLabel>{t('label')}</ControlLabel>
                     <FormControl componentClass="textarea" rows="2" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder={t('labelPlaceholder')}/>
-                  </FormGroup>
-                  <FormGroup>
-                    <ControlLabel>{t('observer')}</ControlLabel>
-                    <Checkbox checked={!!activePoi.observer} onChange={this.handleObserverChange.bind(this)}/>
                   </FormGroup>
                 </Panel>
               }
