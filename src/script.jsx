@@ -1,12 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const { Map, TileLayer, Marker, LayersControl } = require('react-leaflet');
-const Toposcope = require('./toposcope.jsx');
-const Help = require('./help.jsx');
-const Settings = require('./settings.jsx');
-const Hourglass = require('./hourglass.jsx');
-const createMarker = require('./markers.js');
-const loadPeaks = require('./poiLoader.js');
 const FileSaver = require('file-saver');
 const Navbar = require('react-bootstrap/lib/Navbar');
 const Nav = require('react-bootstrap/lib/Nav');
@@ -22,16 +16,21 @@ const Panel = require('react-bootstrap/lib/Panel');
 const ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 const Button = require('react-bootstrap/lib/Button');
 
+const Toposcope = require('./toposcope.jsx');
+const Help = require('./help.jsx');
+const Settings = require('./settings.jsx');
+const Hourglass = require('./hourglass.jsx');
+const createMarker = require('./markers.js');
+const loadPeaks = require('./poiLoader.js');
+const { languages, getBrowserLanguage, readMessages } = require('./i18n.js');
+const mapDefinitions = require('./mapDefinitions');
+
 const poiIcon = createMarker('#ddf');
 const observerIcon = createMarker('#f88');
 const activeObserverIcon = createMarker('#f00');
 const activePoiIcon = createMarker('#66f');
 
-const mapDefinitions = require('./mapDefinitions');
-
 const localStorageName = 'toposcope1';
-
-const languages = { en: 'English', sk: 'Slovensky', cs: 'Česky' };
 
 const cleanState = {
   pois: [],
@@ -45,12 +44,8 @@ class Main extends React.Component {
     super(props);
 
     const toposcope = JSON.parse(localStorage.getItem(localStorageName));
-    if (toposcope && toposcope.language === 'cz') {
-      toposcope.language = 'cs'; // compatibility
-    }
-    const language = toposcope && toposcope.language
-      || navigator.languages.map(language => language.split('-')[0]).find(language => languages[language])
-      || 'en';
+    const language = getBrowserLanguage(toposcope && toposcope.language);
+    delete toposcope.language;
 
     this.state = Object.assign({}, cleanState, {
       map: 'OpenStreetMap Mapnik',
@@ -64,11 +59,7 @@ class Main extends React.Component {
       showSettings: false,
       loadPoiMaxDistance: 1000,
       onlyNearest: true
-    });
-
-    if (toposcope) {
-      Object.assign(this.state, toposcope);
-    }
+    }, toposcope || {});
 
     this.nextId = this.state.pois.reduce((a, { id }) => Math.min(a, id), 0) - 1;
   }
@@ -378,17 +369,6 @@ class Main extends React.Component {
       </Hourglass>
     );
   }
-}
-
-function readMessages(language) {
-  const messages = Object.assign({}, require(`../i18n/en.json`), require(`../i18n/${language}.json`));
-  Object.keys(messages).forEach(function (key) {
-    const message = messages[key];
-    if (Array.isArray(message)) {
-      messages[key] = message.join('\n');
-    }
-  });
-  return messages;
 }
 
 ReactDOM.render(<Main/>, document.getElementById('main'));
