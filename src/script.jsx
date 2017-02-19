@@ -48,8 +48,9 @@ class Main extends React.Component {
     if (toposcope && toposcope.language === 'cz') {
       toposcope.language = 'cs'; // compatibility
     }
-    const language = toposcope && toposcope.language ||
-      navigator.languages.map(language => language.split('-')[0]).find(language => languages[language])
+    const language = toposcope && toposcope.language
+      || navigator.languages.map(language => language.split('-')[0]).find(language => languages[language])
+      || 'en';
 
     this.state = Object.assign({}, cleanState, {
       map: 'OpenStreetMap Mapnik',
