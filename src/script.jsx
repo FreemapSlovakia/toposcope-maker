@@ -98,7 +98,7 @@ class Main extends React.Component {
         pois: [
           ...this.state.pois.filter(poi => poi !== observer),
           observer ? Object.assign({}, observer, { lat: e.latlng.lat, lng: e.latlng.lng })
-            : { lat: e.latlng.lat, lng: e.latlng.lng, text: '{d} km', id: this.nextId, observer: true }
+            : { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId, observer: true }
         ]
       });
       this.nextId--;
