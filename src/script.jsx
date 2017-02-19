@@ -19,6 +19,8 @@ const MenuItem = require('react-bootstrap/lib/MenuItem');
 const Checkbox = require('react-bootstrap/lib/Checkbox');
 const Glyphicon = require('react-bootstrap/lib/Glyphicon');
 const Panel = require('react-bootstrap/lib/Panel');
+const ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
+const Button = require('react-bootstrap/lib/Button');
 
 const poiIcon = createMarker('#ddf');
 const observerIcon = createMarker('#f88');
@@ -249,6 +251,16 @@ class Main extends React.Component {
 
     return (
       <Hourglass active={fetching}>
+        <style>{`
+          .leaflet-container {
+            cursor: ${[ 'setObserver', 'addPoi', 'loadPois' ].indexOf(mode) !== -1 ? 'crosshair' : ''};
+          }
+
+          .leaflet-marker-icon {
+            cursor: ${mode === 'movePoi' ? 'move' : mode === 'deletePoi' ? 'crosshair' : ''}
+          }
+        `}</style>
+
         <Help onClose={this.handleHideHelp.bind(this)} show={showHelp} messages={messages}/>
         <Settings onClose={this.handleCancelSettings.bind(this)} onSave={this.handleSaveSettings.bind(this)}
           show={showSettings} messages={messages}
@@ -271,12 +283,6 @@ class Main extends React.Component {
                 <NavItem onClick={this.handleSaveProject.bind(this)}><Glyphicon glyph="save"/> {t('saveProject')}</NavItem>
                 <NavItem onClick={this.handleSaveImage.bind(this)} disabled={!observerPoi}><Glyphicon glyph="picture"/> {t('saveToposcope')}</NavItem>
               </NavDropdown>
-              {[ [ 'setObserver', 'eye-open' ], [ 'addPoi', 'map-marker' ], [ 'loadPois', 'record' ],
-                  [ 'movePoi', 'move' ], [ 'deletePoi', 'remove' ] ].map(([ m, icon ]) => (
-                <NavItem key={m} active={mode === m} onClick={this.handleSetMode.bind(this, m)} title={t(m)}>
-                  <Glyphicon glyph={icon}/><span className="hidden-sm hidden-md hidden-lg"> {t(m)}</span>
-                </NavItem>
-              ))}
               <NavItem onClick={this.handleShowSettings.bind(this)}><Glyphicon glyph="wrench"/> {t('settings')}</NavItem>
               <NavItem onClick={this.handleShowHelp.bind(this)}><Glyphicon glyph="question-sign"/> {t('help')}</NavItem>
               <NavDropdown title={<span><Glyphicon glyph="globe"/> {t('language')}</span>} id="basic-nav-dropdown">
@@ -292,7 +298,15 @@ class Main extends React.Component {
         <div className="container">
           <div className="row">
             <div className="col-md-6">
-              <Panel>
+              <Panel className="map-panel">
+                <ButtonGroup vertical className="tool-buttons">
+                  {[ [ 'setObserver', 'eye-open' ], [ 'addPoi', 'map-marker' ], [ 'loadPois', 'record' ],
+                      [ 'movePoi', 'move' ], [ 'deletePoi', 'remove' ] ].map(([ m, icon ]) => (
+                    <Button key={m} bsStyle={`${mode === m ? 'primary' : 'default'}`} bsSize="small" onClick={this.handleSetMode.bind(this, m)} title={t(m)}>
+                      <Glyphicon glyph={icon}/>
+                    </Button>
+                  ))}
+                </ButtonGroup>
                 <Map style={{ width: '100%', height: '500px' }} center={center} zoom={zoom}
                     onMove={this.handleMapMove.bind(this)}
                     onClick={this.handleMapClick.bind(this)}

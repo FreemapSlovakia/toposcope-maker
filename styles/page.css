@@ -3,10 +3,6 @@
   border: 0;
 }
 
-.leaflet-container {
-  cursor: crosshair;
-}
-
 .hourglass {
   position: relative;
 }
@@ -35,4 +31,15 @@
 
 .clickable {
   cursor: pointer;
+}
+
+.map-panel {
+  position: relative;
+}
+
+.tool-buttons {
+  position: absolute;
+  z-index: 9000;
+  top: 100px;
+  left: 25px;
 }
