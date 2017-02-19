@@ -45,6 +45,9 @@ class Main extends React.Component {
     super(props);
 
     const toposcope = JSON.parse(localStorage.getItem(localStorageName));
+    if (toposcope && toposcope.language === 'cz') {
+      toposcope.language = 'cs'; // compatibility
+    }
     const language = toposcope && toposcope.language ||
       navigator.languages.map(language => language.split('-')[0]).find(language => languages[language])
 
