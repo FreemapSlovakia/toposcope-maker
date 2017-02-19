@@ -54,15 +54,15 @@ class Settings extends React.Component {
           <Modal.Title>{t('settings')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FormGroup>
+          <FormGroup controlId="loadPoiMaxDistance">
             <ControlLabel>{t('loadPoiMaxDistance')}</ControlLabel>
             <FormControl type="number" min="1" max="20000" value={loadPoiMaxDistance} onChange={this.handleLoadPoiMaxDistanceChange.bind(this)}/>
           </FormGroup>
-          <FormGroup>
+          <FormGroup controlId="onlyNearest">
             <ControlLabel>{t('onlyNearest')}</ControlLabel>
             <Checkbox checked={onlyNearest} onChange={this.handleOnlyNearestChange.bind(this)}/>
           </FormGroup>
-          <FormGroup>
+          <FormGroup controlId="addLineBreaks">
             <ControlLabel>{t('addLineBreaks')}</ControlLabel>
             <Checkbox checked={addLineBreaks} onChange={this.handleAddLineBreaksChange.bind(this)}/>
           </FormGroup>

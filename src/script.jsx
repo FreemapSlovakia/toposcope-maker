@@ -333,7 +333,7 @@ class Main extends React.Component {
             <div className="col-md-4">
               <Panel>
                 {[ [ 'south', 'east' ], [ 'south', 'west' ], [ 'north', 'west' ], [ 'north', 'east' ] ].map(([ c1, c2 ], i) =>
-                  <FormGroup key={i}>
+                  <FormGroup key={i} controlId={`inscription-${c1}-${c2}`}>
                     <ControlLabel>{t('inscription')} {t(c1)}–{t(c2)}</ControlLabel>
                     <FormControl type="text" value={inscriptions[i]} onChange={this.handleCustomTextChange.bind(this, i)}/>
                   </FormGroup>
@@ -342,15 +342,15 @@ class Main extends React.Component {
             </div>
             <div className="col-md-4">
               <Panel>
-                <FormGroup>
+                <FormGroup controlId="innerCircleRadius">
                   <ControlLabel>{t('innerCircleRadius')}</ControlLabel>
                   <FormControl type="number" min="0" max="80" value={innerCircleRadius} onChange={this.handleInnerCircleRadiusChange.bind(this)}/>
                 </FormGroup>
-                <FormGroup>
+                <FormGroup controlId="fontSize">
                   <ControlLabel>{t('fontSize')}</ControlLabel>
                   <FormControl type="number" min="0" max="10" step="0.1" value={fontSize} onChange={this.handleFontSizeChange.bind(this)}/>
                 </FormGroup>
-                <FormGroup>
+                <FormGroup controlId="preventUpturnedText">
                   <ControlLabel>{t('preventUpturnedText')}</ControlLabel>
                   <Checkbox checked={preventUpturnedText} onChange={this.handlePreventUpturnedTextChange.bind(this)}/>
                 </FormGroup>
@@ -359,7 +359,7 @@ class Main extends React.Component {
             <div className="col-md-4">
               {activePoi &&
                 <Panel>
-                  <FormGroup>
+                  <FormGroup controlId="label">
                     <ControlLabel>{t('label')}</ControlLabel>
                     <FormControl componentClass="textarea" rows="2" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder={t('labelPlaceholder')}/>
                   </FormGroup>
