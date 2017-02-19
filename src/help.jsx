@@ -3,7 +3,7 @@ const Modal = require('react-bootstrap-modal');
 
 module.exports = Help;
 
-function Help({ show, onClose, messages }) {
+function Help({ show, onClose, messages, language }) {
   const t = key => messages[key] || key;
 
   return (
@@ -12,7 +12,7 @@ function Help({ show, onClose, messages }) {
         <Modal.Title>{t('help')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div dangerouslySetInnerHTML={{__html: t('helpText')}}/>
+        <div dangerouslySetInnerHTML={{__html: require(`../i18n/help-${language}.txt`)}}/>
       </Modal.Body>
       <Modal.Footer>
         <Modal.Dismiss className='btn btn-default'>{t('close')}</Modal.Dismiss>
@@ -24,5 +24,6 @@ function Help({ show, onClose, messages }) {
 Help.propTypes = {
   show: React.PropTypes.bool,
   onClose: React.PropTypes.func.isRequired,
+  language: React.PropTypes.string.isRequired,
   messages: React.PropTypes.object.isRequired,
 };

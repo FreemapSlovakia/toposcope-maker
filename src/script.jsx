@@ -261,7 +261,7 @@ class Main extends React.Component {
           }
         `}</style>
 
-        <Help onClose={this.handleHideHelp.bind(this)} show={showHelp} messages={messages}/>
+      <Help onClose={this.handleHideHelp.bind(this)} show={showHelp} messages={messages} language={language}/>
         <Settings onClose={this.handleCancelSettings.bind(this)} onSave={this.handleSaveSettings.bind(this)}
           show={showSettings} messages={messages}
           loadPoiMaxDistance={loadPoiMaxDistance}

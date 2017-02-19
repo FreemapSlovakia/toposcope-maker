@@ -30,20 +30,5 @@
   "save": "Save",
   "cancel": "Cancel",
   "settings": "Settings",
-  "onlyNearest": "Use only the nearest POI found",
-  "helpText": [
-    "<p>This is a tool for creating <a href='https://en.wikipedia.org/wiki/Toposcope' target='_blank'>toposcopes</a>. You can find the project at <a href='https://github.com/FreemapSlovakia/toposcope-maker' target='_blank'>GitHub</a>.</p>",
-    "<p>Functions:<ul>",
-    "<li><u>Add POI</u> - clicking the map will add new point to that location</li>",
-    "<li><u>Load POIs</u> - clickig the map set the position around which sould be POIs from OpenStreetMap database downloaded</li>",
-    "<li><u>Move</u> - enables dragging the points in the map</li>",
-    "<li><u>Delete</u> - clicking the point will remove it</li>",
-    "<li><u>Save image</u> - offers to download toposcope image as SVG</li>",
-    "</ul></p><p>Point properties:<ul>",
-    "<li><u>Inner circle radius</u> - radius of the inner circle in the toposcope</li>",
-    "<li><u>Max distance of loaded POIs</u> - max distance of POIs to load from the clicked position in the \"Load POIs\" mode</li>",
-    "<li><u>Label</u> - point label; <mark>{d}</mark> in the text will be replaced by distance of the point from the observer in km</li>",
-    "<li><u>Observer</u> - specifies if the point is that from which the observation is done (where the toposcope is placed)</li>",
-    "</ul></p>"
-  ]
+  "onlyNearest": "Use only the nearest POI found"
 }

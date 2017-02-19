@@ -6,7 +6,7 @@
   "addPoi": "Přidávání POI",
   "movePoi": "Posun",
   "deletePoi": "Mazání",
-  "setObserver": "Zadej pozorovatele",
+  "setObserver": "Zadávání pozorovatele",
   "language": "Jazyk",
   "saveToposcope": "Stáhni obrázek",
   "label": "Text",
@@ -30,20 +30,5 @@
   "save": "Ulož",
   "cancel": "Zruš",
   "settings": "Nastavení",
-  "onlyNearest": "Použij pouze nejblíže nalezen bod",
-  "helpText": [
-    "<p>Nástroj slouží pro vytváření <a href='https://en.wikipedia.org/wiki/Toposcope' target='_blank'>výhledových ružic</a>. Projekt najdete na <a href='https://github.com/FreemapSlovakia/toposcope-maker' target='_blank'>GitHubu</a>.</p>",
-    "<p>Popis funkcí:<ul>",
-    "<li><u>Přidávání POI</u> - kliknutím do mapy přidáte nový bod</li>",
-    "<li><u>Načítání bodů</u> - kliknutím do mapy určíte pozici kolem které se načtou body z databáze OpenStreetMap</li>",
-    "<li><u>Posun</u> - umožní tažením posouvat body v mapě</li>",
-    "<li><u>Mazání</u> - vymaže bod na který bylo kliknuto</li>",
-    "<li><u>Ulož obrázek</u> - nabídne ke stažení obrázek výhledové ružice ve formátu SVG</li>",
-    "</ul></p><p>Vlastnosti bodu:<ul>",
-    "<li><u>Poloměr vnitřní kružnice</u> - poloměr vnitřní kružnice ve výhledové ružici</li>",
-    "<li><u>Maximální vzdálenost pro načtení bodů</u> - maximální vzdálenost načtení bodů od místa kliknutí na mapu v režimu \"Načtení bodů\"</li>",
-    "<li><u>Text</u> - popis bodu; <mark>{d}</mark> v textu bude nahradeno vzdáleností bodu od pozorovatele v km</li>",
-    "<li><u>Pozorovatel</u> - určuje bod výhledu (kde je umístněna výhledová ružice)</li>",
-    "</ul></p>"
-  ]
+  "onlyNearest": "Použij pouze nejblíže nalezen bod"
 }
