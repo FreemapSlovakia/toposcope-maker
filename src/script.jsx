@@ -96,6 +96,12 @@ class Main extends React.Component {
       : { activePoiId: poiId });
   }
 
+  handlePoiClick2(poiId) {
+    this.handlePoiClick(poiId);
+    const poi = this.state.pois.find(({ id }) => id === poiId);
+    this.refs.map.leafletElement.panTo([ poi.lat, poi.lng ], { animate: false }); // TODO animation doesn't work for some reason
+  }
+
   handleMapClick(e) {
     if (this.state.mode === 'setObserver') {
       const observer = this.state.pois.find(({ observer }) => observer);
@@ -311,7 +317,7 @@ class Main extends React.Component {
                     </Button>
                   ))}
                 </ButtonGroup>
-                <Map style={{ width: '100%', height: '500px' }} center={center} zoom={zoom}
+                <Map ref="map" style={{ width: '100%', height: '500px' }} center={center} zoom={zoom}
                     onMove={this.handleMapMove.bind(this)}
                     onClick={this.handleMapClick.bind(this)}
                     onZoom={this.handleMapZoom.bind(this)}>
@@ -343,7 +349,7 @@ class Main extends React.Component {
                   innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25}
                   fontSize={parseFloat(fontSize) || 4}
                   preventUpturnedText={preventUpturnedText}
-                  onClick={this.handlePoiClick.bind(this)}/>
+                  onClick={this.handlePoiClick2.bind(this)}/>
               }
             </div>
           </div>
