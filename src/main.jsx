@@ -42,7 +42,15 @@ export default class Main extends React.Component {
   constructor(props) {
     super(props);
 
-    const toposcope = JSON.parse(localStorage.getItem(localStorageName));
+    let toposcope;
+    try {
+      toposcope = JSON.parse(localStorage.getItem(localStorageName));
+    } catch (e) {
+      toposcope = null;
+    }
+    if (!toposcope || typeof toposcope !== 'object') {
+      toposcope = {};
+    }
     const language = getBrowserLanguage(toposcope && toposcope.language);
     delete toposcope.language;
 
