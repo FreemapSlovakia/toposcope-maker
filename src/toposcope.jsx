@@ -12,11 +12,10 @@ export default function Toposcope({ pois, innerCircleRadius = 25, outerCircleRad
     return nf ? nf.format(d / 1000) : (Math.round(d / 100) / 10);
   }
 
-  const innerTexts = [
-    ...observerPoi.text.trim().split('\n'),
-    (observerPoi.lat > 0 ? 'N' : 'S') + ' ' + formatGpsCoord(Math.abs(observerPoi.lat)),
-    (observerPoi.lng < 0 ? 'W' : 'E') + ' ' + formatGpsCoord(Math.abs(observerPoi.lng))
-  ].filter(line => line.trim().length);
+  const innerTexts = observerPoi.text
+    .replace('{lat}', (observerPoi.lat > 0 ? 'N' : 'S') + ' ' + formatGpsCoord(Math.abs(observerPoi.lat)))
+    .replace('{lon}', (observerPoi.lng < 0 ? 'W' : 'E') + ' ' + formatGpsCoord(Math.abs(observerPoi.lng)))
+    .split('\n').map(line => line.trim()).filter(line => line);
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-100 -100 200 200">

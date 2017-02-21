@@ -11,6 +11,7 @@
   "saveToposcope": "Save Image",
   "label": "Label",
   "labelPlaceholder": "Name, {d} km",
+  "labelObserverPlaceholder": "Name\n{lat}\n{lon}",
   "osmAttribution": "© OpenStreetMap contributors",
   "east": "E",
   "south": "S",

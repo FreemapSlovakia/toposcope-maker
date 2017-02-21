@@ -102,7 +102,7 @@ export default class Main extends React.Component {
         pois: [
           ...this.state.pois.filter(poi => poi !== observer),
           observer ? Object.assign({}, observer, { lat: e.latlng.lat, lng: e.latlng.lng })
-            : { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId, observer: true, flipText: false }
+            : { lat: e.latlng.lat, lng: e.latlng.lng, text: '{lat}\n{lon}', id: this.nextId, observer: true, flipText: false }
         ]
       });
       this.nextId--;
@@ -373,7 +373,9 @@ export default class Main extends React.Component {
                 <Panel>
                   <FormGroup controlId="label">
                     <ControlLabel>{t('label')}</ControlLabel>
-                    <FormControl componentClass="textarea" rows="2" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder={t('labelPlaceholder')}/>
+                    <FormControl componentClass="textarea" rows={activePoi.observer ? 3 : 2} value={activePoi.text}
+                      onChange={this.handleTextChange.bind(this)}
+                      placeholder={t(activePoi.observer ? 'labelObserverPlaceholder' : 'labelPlaceholder')}/>
                   </FormGroup>
                   {!activePoi.observer &&
                     <FormGroup controlId="flipText">

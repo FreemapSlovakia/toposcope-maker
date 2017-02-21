@@ -14,7 +14,11 @@
 
 <p>Vlastnosti bodu:</p>
 <ul>
-  <li><u>Text</u> - popis bodu; <mark>{d}</mark> v textu bude nahradeno vzdáleností bodu od pozorovatele v km</li>
+  <li>
+    <u>Text</u> - popis bodu;
+    <mark>{d}</mark> v textu bude nahradeno vzdáleností bodu od pozorovatele v kmô
+    <mark>{lat}</mark> a <mark>{lon}</mark> zemepísni šírkou a výškou (jenom pro pozorovatele)
+  </li>
 </ul>
 
 <p>Vlastnosti výhledové ružice:</p>

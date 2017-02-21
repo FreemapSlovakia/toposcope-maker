@@ -14,7 +14,11 @@
 
 <p>Point properties:</p>
 <ul>
-  <li><u>Label</u> - point label; <mark>{d}</mark> in the text will be replaced by distance of the point from the observer in km</li>
+  <li>
+    <u>Label</u> - point label;
+    <mark>{d}</mark> in the text will be replaced by distance of the point from the observer in km;
+    <mark>{lat}</mark> and <mark>{lon}</mark> by the latitude and longitude (for observer only)
+  </li>
 </ul>
 
 <p>Toposcope properties:</p>

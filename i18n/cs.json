@@ -11,6 +11,7 @@
   "saveToposcope": "Stáhni obrázek",
   "label": "Text",
   "labelPlaceholder": "Název, {d} km",
+  "labelObserverPlaceholder": "Název {lat} {lon}",
   "osmAttribution": "© přispěvatelé OpenStreetMap",
   "east": "V",
   "south": "J",
@@ -32,5 +33,5 @@
   "settings": "Nastavení",
   "onlyNearest": "Použij pouze nejblíže nalezen bod",
   "flipText": "Otoč text",
-  "flipTextDisabled": "Blokováno, protože je aktivní \"Zabránit textu vzhůru nohama\""  
+  "flipTextDisabled": "Blokováno, protože je aktivní \"Zabránit textu vzhůru nohama\""
 }
