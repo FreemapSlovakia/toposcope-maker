@@ -26,6 +26,7 @@ export default function loadPeaks(lat, lng, distance = 5000, language, addLineBr
       items = [ items[distances.indexOf(min)] ];
     }
     return items.map(({ id, lat, lon, tags: { name, ele } }) =>
-      ({ id, lat, lng: lon, text: `${name || '???'}${ele ? ` (${formatEle(ele)} m)` : ''}${addLineBreaks ? '\n' : ', '}{d} km`, observer: false }))
-  })//.catch(() => []);
+      ({ id, lat, lng: lon, observer: false, flipText: false,
+        text: `${name || '???'}${ele ? ` (${formatEle(ele)} m)` : ''}${addLineBreaks ? '\n' : ', '}{d} km` }))
+  });
 }

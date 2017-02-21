@@ -20,7 +20,7 @@ import Help from './help.jsx';
 import Settings from './settings.jsx';
 import Hourglass from './hourglass.jsx';
 import createMarker from './markers.js';
-import loadPeaks from './poiLoader.js';
+import loadPois from './poiLoader.js';
 import { languages, getBrowserLanguage, readMessages } from './i18n.js';
 import mapDefinitions from './mapDefinitions';
 
@@ -69,7 +69,7 @@ export default class Main extends React.Component {
   componentDidUpdate() {
     const toSave = {};
     [ 'pois', 'activePoiId', 'inscriptions', 'map', 'center', 'zoom', 'mode', 'language', 'loadPoiMaxDistance', 'onlyNearest',
-      'preventUpturnedText', 'addLineBreaks', 'innerCircleRadius' ]
+      'preventUpturnedText', 'addLineBreaks', 'innerCircleRadius', 'fontSize' ]
       .forEach(prop => toSave[prop] = this.state[prop]);
     localStorage.setItem(localStorageName, JSON.stringify(toSave));
   }
@@ -102,14 +102,14 @@ export default class Main extends React.Component {
         pois: [
           ...this.state.pois.filter(poi => poi !== observer),
           observer ? Object.assign({}, observer, { lat: e.latlng.lat, lng: e.latlng.lng })
-            : { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId, observer: true }
+            : { lat: e.latlng.lat, lng: e.latlng.lng, text: '', id: this.nextId, observer: true, flipText: false }
         ]
       });
       this.nextId--;
     } else if (this.state.mode === 'addPoi') {
       this.setState({
         activePoiId: this.nextId,
-        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '{d} km', id: this.nextId, observer: false } ]
+        pois: [ ...this.state.pois, { lat: e.latlng.lat, lng: e.latlng.lng, text: '{d} km', id: this.nextId, observer: false, flipText: false } ]
       });
       this.nextId--;
     } else if (this.state.mode === 'loadPois') {
@@ -117,7 +117,7 @@ export default class Main extends React.Component {
       const { lat, lng } = e.latlng;
       const radius = loadPoiMaxDistance > 0 && loadPoiMaxDistance <= 20000 ? loadPoiMaxDistance : 1000;
       this.setState({ fetching: true });
-      loadPeaks(lat, lng, radius, language, addLineBreaks, onlyNearest).then(pois => {
+      loadPois(lat, lng, radius, language, addLineBreaks, onlyNearest).then(pois => {
         this.setState({ activePoiId: null,
           pois: [ ...this.state.pois.filter(({ id1 }) => pois.find(({ id2 }) => id1 !== id2) !== -1), ...pois ] });
       }).catch().then(() => this.setState({ fetching: false }));
@@ -141,7 +141,7 @@ export default class Main extends React.Component {
     if (activePoi) {
       this.setState({ pois: [
         ...this.state.pois.filter(poi => poi !== activePoi),
-        Object.assign({}, activePoi, { flip: !activePoi.flip })
+        Object.assign({}, activePoi, { flipText: !activePoi.flipText })
       ] });
     }
   }
@@ -207,7 +207,7 @@ export default class Main extends React.Component {
 
   handleSaveProject() {
     const toSave = {};
-    [ 'pois', 'activePoiId', 'inscriptions', 'map', 'center', 'zoom' ]
+    [ 'pois', 'activePoiId', 'inscriptions', 'map', 'center', 'zoom', 'preventUpturnedText', 'innerCircleRadius', 'fontSize' ]
       .forEach(prop => toSave[prop] = this.state[prop]);
     FileSaver.saveAs(new Blob([ JSON.stringify(toSave) ], { type: 'application/json' }), 'toposcope.json');
   }
@@ -336,6 +336,7 @@ export default class Main extends React.Component {
                   innerCircleRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25}
                   fontSize={parseFloat(fontSize) || 4}
                   preventUpturnedText={preventUpturnedText}
+                  activePoiId={activePoiId}
                   onClick={this.handlePoiClick2.bind(this)}/>
               }
             </div>
@@ -376,7 +377,7 @@ export default class Main extends React.Component {
                   </FormGroup>
                   <FormGroup controlId="flipText">
                     <ControlLabel>{t('flipText')}</ControlLabel>
-                    <Checkbox checked={activePoi.flip} onChange={this.handleFlipChange.bind(this)} disabled={preventUpturnedText}
+                    <Checkbox checked={activePoi.flipText} onChange={this.handleFlipChange.bind(this)} disabled={preventUpturnedText}
                       title={preventUpturnedText ? t('flipTextDisabled') : ''}/>
                   </FormGroup>
                 </Panel>

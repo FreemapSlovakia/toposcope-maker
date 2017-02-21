@@ -33,6 +33,14 @@
   cursor: pointer;
 }
 
+.poi-active-text {
+  fill: #c00 !important;
+}
+
+.poi-active-line {
+  stroke: #c00 !important;
+}
+
 .map-panel {
   position: relative;
 }

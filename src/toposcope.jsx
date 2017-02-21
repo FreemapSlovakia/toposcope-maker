@@ -1,8 +1,8 @@
 import React from 'react';
 
 export default function Toposcope({ pois, innerCircleRadius = 25, outerCircleRadius = 90,
-    messages, inscriptions, language, fontSize, preventUpturnedText, onClick }) {
-      
+    messages, inscriptions, language, fontSize, preventUpturnedText, onClick, activePoiId }) {
+
   const t = key => messages[key] || key;
   const observerPoi = pois.find(({ observer }) => observer);
   const poisAround = pois.filter(poi => poi !== observerPoi).map(poi => Object.assign({}, poi));
@@ -40,7 +40,7 @@ export default function Toposcope({ pois, innerCircleRadius = 25, outerCircleRad
           const b = Math.PI + bearing(toRad(observerPoi.lat), toRad(observerPoi.lng), toRad(lat), toRad(lng));
           let p1 = `${Math.sin(b) * innerCircleRadius} ${Math.cos(b) * innerCircleRadius}`;
           let p2 = `${Math.sin(b) * outerCircleRadius} ${Math.cos(b) * outerCircleRadius}`;
-          if (preventUpturnedText ? !(b > 2 * Math.PI) : poi.flip) {
+          if (preventUpturnedText ? !(b > 2 * Math.PI) : poi.flipText) {
             [ p1, p2 ] = [ p2, p1 ];
             poi.reversed = true;
           }
@@ -62,19 +62,21 @@ export default function Toposcope({ pois, innerCircleRadius = 25, outerCircleRad
         </text>
       )}
 
-      {poisAround.map(({ id }) => <use key={id} xlinkHref={`#p${id}`} className="line clickable" onClick={onClick.bind(null, id)}/>)}
+      {poisAround.map(({ id }) => <use key={id} xlinkHref={`#p${id}`} className={`line clickable ${id === activePoiId ? 'poi-active-line' : ''}`}
+        onClick={onClick.bind(null, id)}/>)}
 
       {
         poisAround.map(({ id, lat, lng, text, reversed }) => {
           const lines = text.replace('{d}', formatDistance(L.latLng(lat, lng).distanceTo(L.latLng(observerPoi.lat, observerPoi.lng)))).split('\n');
           const clickHandler = onClick.bind(null, id);
+          const className = `lineText clickable ${id === activePoiId ? 'poi-active-text' : ''}`;
           return [
-            <text key={'x' + id} className="lineText clickable" onClick={clickHandler}>
+            <text key={'x' + id} className={className} onClick={clickHandler}>
               <textPath xlinkHref={`#p${id}`} startOffset={reversed ? '0%' : '100%'} textAnchor={reversed ? 'start' : 'end'}>
                 <tspan x="0" dy="-2" xmlSpace="preserve">&#160;&#160;&#160;&#160;{lines[0]}&#160;&#160;&#160;&#160;</tspan>
               </textPath>
             </text>,
-            lines[1] ? <text key={id} className="lineText clickable" onClick={clickHandler}>
+            lines[1] ? <text key={id} className={className} onClick={clickHandler}>
               <textPath xlinkHref={`#p${id}`} startOffset={reversed ? '0%' : '100%'} textAnchor={reversed ? 'start' : 'end'}>
                 <tspan x="0" dy="5" xmlSpace="preserve">&#160;&#160;&#160;&#160;{lines[1]}&#160;&#160;&#160;&#160;</tspan>
               </textPath>
@@ -86,7 +88,8 @@ export default function Toposcope({ pois, innerCircleRadius = 25, outerCircleRad
       <circle cx="0" cy="0" r={outerCircleRadius} className="line"/>
       <circle cx="0" cy="0" r={innerCircleRadius} className="line"/>
 
-      <text x="0" y={-1 - innerTexts.length * 3} className="lineText clickable" onClick={onClick.bind(null, observerPoi.id)}>
+      <text x="0" y={-1 - innerTexts.length * 3} className={`lineText clickable ${observerPoi.id === activePoiId ? 'poi-active-text' : ''}`}
+          onClick={onClick.bind(null, observerPoi.id)}>
         {innerTexts.map((line, i) => <tspan key={i} textAnchor="middle" x="0" dy="6">{line}</tspan>)}
       </text>
     </svg>
@@ -101,6 +104,7 @@ function formatGpsCoord(angle) {
 }
 
 Toposcope.propTypes = {
+  activePoiId: React.PropTypes.number,
   innerCircleRadius: React.PropTypes.number,
   outerCircleRadius: React.PropTypes.number,
   fontSize: React.PropTypes.number,
