@@ -11,7 +11,7 @@
   "saveToposcope": "Stiahni obrázok",
   "label": "Text",
   "labelPlaceholder": "Názov, {d} km",
-  "labelObserverPlaceholder": "Názov {lat} {lon}",
+  "labelObserverPlaceholder": "Názov\n{lat}\n{lon}",
   "osmAttribution": "© prispievatelia OpenStreetMap",
   "east": "V",
   "south": "J",
