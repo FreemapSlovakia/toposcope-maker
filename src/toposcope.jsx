@@ -33,20 +33,6 @@ export default function Toposcope({ pois, innerCircleRadius = 25, outerCircleRad
         }
       `}</style>
 
-      <defs>
-        {poisAround.map(poi => {
-          const { id, lat, lng } = poi;
-          const b = Math.PI + bearing(toRad(observerPoi.lat), toRad(observerPoi.lng), toRad(lat), toRad(lng));
-          let p1 = `${Math.sin(b) * innerCircleRadius} ${Math.cos(b) * innerCircleRadius}`;
-          let p2 = `${Math.sin(b) * outerCircleRadius} ${Math.cos(b) * outerCircleRadius}`;
-          if (preventUpturnedText ? !(b > 2 * Math.PI) : poi.flipText) {
-            [ p1, p2 ] = [ p2, p1 ];
-            poi.reversed = true;
-          }
-          return <path id={`p${id}`} key={id} d={`M ${p1} L ${p2}`}/>;
-        })}
-      </defs>
-
       <path id="outerCircle" d="M 99,0 A 99,99 0 0 1 0,99 99,99 0 0 1 -99,0 99,99 0 0 1 0,-99 99,99 0 0 1 99,0 Z" className="line"/>
 
       {inscriptions.map((inscription, i) =>
@@ -61,8 +47,19 @@ export default function Toposcope({ pois, innerCircleRadius = 25, outerCircleRad
         </text>
       )}
 
-      {poisAround.map(({ id }) => <use key={id} xlinkHref={`#p${id}`} className={`line clickable ${id === activePoiId ? 'poi-active-line' : ''}`}
-        onClick={onClick.bind(null, id)}/>)}
+      {poisAround.map(poi => {
+        const { id, lat, lng } = poi;
+        const b = Math.PI + bearing(toRad(observerPoi.lat), toRad(observerPoi.lng), toRad(lat), toRad(lng));
+        let p1 = `${Math.sin(b) * innerCircleRadius} ${Math.cos(b) * innerCircleRadius}`;
+        let p2 = `${Math.sin(b) * outerCircleRadius} ${Math.cos(b) * outerCircleRadius}`;
+        if (preventUpturnedText ? !(b > 2 * Math.PI) : poi.flipText) {
+          [ p1, p2 ] = [ p2, p1 ];
+          poi.reversed = true;
+        }
+        return <path id={`p${id}`} key={id} d={`M ${p1} L ${p2}`}
+          className={`line clickable ${id === activePoiId ? 'poi-active-line' : ''}`}
+          onClick={onClick.bind(null, id)}/>;
+      })}
 
       {
         poisAround.map(({ id, lat, lng, text, reversed }) => {
