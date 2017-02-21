@@ -375,11 +375,13 @@ export default class Main extends React.Component {
                     <ControlLabel>{t('label')}</ControlLabel>
                     <FormControl componentClass="textarea" rows="2" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder={t('labelPlaceholder')}/>
                   </FormGroup>
-                  <FormGroup controlId="flipText">
-                    <ControlLabel>{t('flipText')}</ControlLabel>
-                    <Checkbox checked={activePoi.flipText} onChange={this.handleFlipChange.bind(this)} disabled={preventUpturnedText}
-                      title={preventUpturnedText ? t('flipTextDisabled') : ''}/>
-                  </FormGroup>
+                  {!activePoi.observer &&
+                    <FormGroup controlId="flipText">
+                      <ControlLabel>{t('flipText')}</ControlLabel>
+                      <Checkbox checked={activePoi.flipText} onChange={this.handleFlipChange.bind(this)} disabled={preventUpturnedText}
+                        title={preventUpturnedText ? t('flipTextDisabled') : ''}/>
+                    </FormGroup>
+                  }
                 </Panel>
               }
             </div>
