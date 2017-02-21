@@ -57,7 +57,10 @@ export default class Main extends React.Component {
       showHelp: false,
       showSettings: false,
       loadPoiMaxDistance: 1000,
-      onlyNearest: true
+      onlyNearest: true,
+      innerCircleRadius: 25,
+      addLineBreaks: false,
+      fontSize: 3.5
     }, toposcope || {});
 
     this.nextId = this.state.pois.reduce((a, { id }) => Math.min(a, id), 0) - 1;
@@ -65,7 +68,8 @@ export default class Main extends React.Component {
 
   componentDidUpdate() {
     const toSave = {};
-    [ 'pois', 'activePoiId', 'inscriptions', 'map', 'center', 'zoom', 'mode', 'language', 'loadPoiMaxDistance', 'onlyNearest' ]
+    [ 'pois', 'activePoiId', 'inscriptions', 'map', 'center', 'zoom', 'mode', 'language', 'loadPoiMaxDistance', 'onlyNearest',
+      'preventUpturnedText', 'addLineBreaks', 'innerCircleRadius' ]
       .forEach(prop => toSave[prop] = this.state[prop]);
     localStorage.setItem(localStorageName, JSON.stringify(toSave));
   }
@@ -128,6 +132,16 @@ export default class Main extends React.Component {
       this.setState({ pois: [
         ...this.state.pois.filter(poi => poi !== activePoi),
         Object.assign({}, activePoi, { text: e.target.value })
+      ] });
+    }
+  }
+
+  handleFlipChange() {
+    const activePoi = this.state.pois.find(({ id }) => id === this.state.activePoiId);
+    if (activePoi) {
+      this.setState({ pois: [
+        ...this.state.pois.filter(poi => poi !== activePoi),
+        Object.assign({}, activePoi, { flip: !activePoi.flip })
       ] });
     }
   }
@@ -319,7 +333,7 @@ export default class Main extends React.Component {
             <div className="col-md-6" ref="toposcope">
               {observerPoi &&
                 <Toposcope pois={pois} messages={messages} inscriptions={inscriptions} language={language}
-                  innerRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25}
+                  innerCircleRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25}
                   fontSize={parseFloat(fontSize) || 4}
                   preventUpturnedText={preventUpturnedText}
                   onClick={this.handlePoiClick2.bind(this)}/>
@@ -359,6 +373,11 @@ export default class Main extends React.Component {
                   <FormGroup controlId="label">
                     <ControlLabel>{t('label')}</ControlLabel>
                     <FormControl componentClass="textarea" rows="2" value={activePoi.text} onChange={this.handleTextChange.bind(this)} placeholder={t('labelPlaceholder')}/>
+                  </FormGroup>
+                  <FormGroup controlId="flipText">
+                    <ControlLabel>{t('flipText')}</ControlLabel>
+                    <Checkbox checked={activePoi.flip} onChange={this.handleFlipChange.bind(this)} disabled={preventUpturnedText}
+                      title={preventUpturnedText ? t('flipTextDisabled') : ''}/>
                   </FormGroup>
                 </Panel>
               }

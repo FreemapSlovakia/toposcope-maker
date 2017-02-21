@@ -30,5 +30,7 @@
   "save": "Save",
   "cancel": "Cancel",
   "settings": "Settings",
-  "onlyNearest": "Use only the nearest POI found"
+  "onlyNearest": "Use only the nearest POI found",
+  "flipText": "Flip text",
+  "flipTextDisabled": "Disabled because of active \"Prevent text upside down\""
 }

@@ -1,6 +1,8 @@
 import React from 'react';
 
-export default function Toposcope({ pois, innerRadius = 25, outerRadius = 90, messages, inscriptions, language, fontSize, preventUpturnedText, onClick }) {
+export default function Toposcope({ pois, innerCircleRadius = 25, outerCircleRadius = 90,
+    messages, inscriptions, language, fontSize, preventUpturnedText, onClick }) {
+      
   const t = key => messages[key] || key;
   const observerPoi = pois.find(({ observer }) => observer);
   const poisAround = pois.filter(poi => poi !== observerPoi).map(poi => Object.assign({}, poi));
@@ -36,9 +38,9 @@ export default function Toposcope({ pois, innerRadius = 25, outerRadius = 90, me
         {poisAround.map(poi => {
           const { id, lat, lng } = poi;
           const b = Math.PI + bearing(toRad(observerPoi.lat), toRad(observerPoi.lng), toRad(lat), toRad(lng));
-          let p1 = `${Math.sin(b) * innerRadius} ${Math.cos(b) * innerRadius}`;
-          let p2 = `${Math.sin(b) * outerRadius} ${Math.cos(b) * outerRadius}`;
-          if (!(b > 2 * Math.PI) && preventUpturnedText) {
+          let p1 = `${Math.sin(b) * innerCircleRadius} ${Math.cos(b) * innerCircleRadius}`;
+          let p2 = `${Math.sin(b) * outerCircleRadius} ${Math.cos(b) * outerCircleRadius}`;
+          if (preventUpturnedText ? !(b > 2 * Math.PI) : poi.flip) {
             [ p1, p2 ] = [ p2, p1 ];
             poi.reversed = true;
           }
@@ -81,8 +83,8 @@ export default function Toposcope({ pois, innerRadius = 25, outerRadius = 90, me
         })
       }
 
-      <circle cx="0" cy="0" r={outerRadius} className="line"/>
-      <circle cx="0" cy="0" r={innerRadius} className="line"/>
+      <circle cx="0" cy="0" r={outerCircleRadius} className="line"/>
+      <circle cx="0" cy="0" r={innerCircleRadius} className="line"/>
 
       <text x="0" y={-1 - innerTexts.length * 3} className="lineText clickable" onClick={onClick.bind(null, observerPoi.id)}>
         {innerTexts.map((line, i) => <tspan key={i} textAnchor="middle" x="0" dy="6">{line}</tspan>)}
@@ -99,8 +101,8 @@ function formatGpsCoord(angle) {
 }
 
 Toposcope.propTypes = {
-  innerRadius: React.PropTypes.number,
-  outerRadius: React.PropTypes.number,
+  innerCircleRadius: React.PropTypes.number,
+  outerCircleRadius: React.PropTypes.number,
   fontSize: React.PropTypes.number,
   inscriptions: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   messages: React.PropTypes.object.isRequired,

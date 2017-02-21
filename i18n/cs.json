@@ -30,5 +30,7 @@
   "save": "Ulož",
   "cancel": "Zruš",
   "settings": "Nastavení",
-  "onlyNearest": "Použij pouze nejblíže nalezen bod"
+  "onlyNearest": "Použij pouze nejblíže nalezen bod",
+  "flipText": "Otoč text",
+  "flipTextDisabled": "Blokováno, protože je aktivní \"Zabránit textu vzhůru nohama\""  
 }

@@ -30,5 +30,7 @@
   "save": "Ulož",
   "cancel": "Zruš",
   "settings": "Nastavenia",
-  "onlyNearest": "Použi iba najbližšie nájdený bod"
+  "onlyNearest": "Použi iba najbližšie nájdený bod",
+  "flipText": "Otoč text",
+  "flipTextDisabled": "Blokované, pretože je aktívne \"Zabráň textu dole hlavou\""  
 }
