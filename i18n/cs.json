@@ -20,8 +20,8 @@
   "inscription": "Vlastní text",
   "help": "Pomoc",
   "close": "Zavři",
-  "fontSize": "Velikost textu",
-  "addLineBreaks": "Zalom řádek za nadmorskou výškou načteného bodu",
+  "fontSize": "Velikost písma",
+  "addLineBreaks": "Zalomit řádek za nadmořskou výškou načteného bodu",
   "preventUpturnedText": "Zabránit textu vzhůru nohama",
   "project": "Projekt",
   "newProject": "Nový",
@@ -31,7 +31,7 @@
   "save": "Ulož",
   "cancel": "Zruš",
   "settings": "Nastavení",
-  "onlyNearest": "Použij pouze nejblíže nalezen bod",
+  "onlyNearest": "Použij pouze nejblížší nalezený bod",
   "flipText": "Otoč text",
   "flipTextDisabled": "Blokováno, protože je aktivní \"Zabránit textu vzhůru nohama\""
 }
