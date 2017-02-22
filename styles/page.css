@@ -47,7 +47,7 @@
 
 .tool-buttons {
   position: absolute;
-  z-index: 9000;
+  z-index: 1010;
   top: 100px;
   left: 25px;
 }
