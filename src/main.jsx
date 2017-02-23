@@ -340,7 +340,7 @@ export default class Main extends React.Component {
             </div>
             <div className="col-md-6" ref="toposcope">
               {observerPoi &&
-                <Toposcope pois={pois} messages={messages} inscriptions={inscriptions} language={language}
+                <Toposcope pois={pois} inscriptions={inscriptions} language={language}
                   innerCircleRadius={!isNaN(icr) && icr > 0 && icr <= 80 ? icr : 25}
                   fontSize={parseFloat(fontSize) || 4}
                   preventUpturnedText={preventUpturnedText}

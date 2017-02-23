@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { readMessages, languages } from './i18n.js';
+import { formatGpsCoord, distance, bearing, toRad } from './geoutils.js';
 
-export default function Toposcope({ pois, innerCircleRadius = 25, outerCircleRadius = 90,
-    messages, inscriptions, language, fontSize, preventUpturnedText, onClick, activePoiId }) {
+export default function Toposcope({
+    pois = [], innerCircleRadius = 25, outerCircleRadius = 90,
+    inscriptions = [], language = 'en', fontSize = 3.5,
+    preventUpturnedText = false, onClick = () => {}, activePoiId = null
+  }) {
+
+  const messages = readMessages(language);
 
   const t = key => messages[key] || key;
   const observerPoi = pois.find(({ observer }) => observer);
+
+  if (!observerPoi) {
+    throw new Error('no observer found');
+  }
+
   const poisAround = pois.filter(poi => poi !== observerPoi).map(poi => Object.assign({}, poi));
   const nf = typeof Intl !== 'undefined' ? new Intl.NumberFormat(language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : null;
 
@@ -63,7 +75,7 @@ export default function Toposcope({ pois, innerCircleRadius = 25, outerCircleRad
 
       {
         poisAround.map(({ id, lat, lng, text, reversed }) => {
-          const lines = text.replace('{d}', formatDistance(L.latLng(lat, lng).distanceTo(L.latLng(observerPoi.lat, observerPoi.lng)))).split('\n');
+          const lines = text.replace('{d}', formatDistance(distance(toRad(lat), toRad(lng), toRad(observerPoi.lat), toRad(observerPoi.lng)))).split('\n');
           const clickHandler = onClick.bind(null, id);
           const className = `lineText clickable ${id === activePoiId ? 'poi-active-text' : ''}`;
           return [
@@ -92,36 +104,23 @@ export default function Toposcope({ pois, innerCircleRadius = 25, outerCircleRad
   );
 }
 
-function formatGpsCoord(angle) {
-  const degrees = Math.floor(angle);
-  const minutes = Math.floor((angle - degrees) * 60);
-  const seconds = Math.round((angle - degrees - minutes / 60) * 3600);
-  return `${degrees}° ${minutes}' ${seconds}"`;
-}
-
 Toposcope.propTypes = {
-  activePoiId: React.PropTypes.number,
-  innerCircleRadius: React.PropTypes.number,
-  outerCircleRadius: React.PropTypes.number,
-  fontSize: React.PropTypes.number,
-  inscriptions: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  messages: React.PropTypes.object.isRequired,
-  pois: React.PropTypes.array.isRequired,
-  title: React.PropTypes.string,
-  language: React.PropTypes.string.isRequired,
-  preventUpturnedText: React.PropTypes.bool,
-  onClick: React.PropTypes.func
+  activePoiId: PropTypes.number,
+  innerCircleRadius: PropTypes.number,
+  outerCircleRadius: PropTypes.number,
+  fontSize: PropTypes.number,
+  inscriptions: PropTypes.arrayOf(PropTypes.string),
+  messages: PropTypes.object,
+  pois: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired,
+    text: PropTypes.string.isRequired,
+    observer: PropTypes.bool,
+    flipText: PropTypes.bool
+  })),
+  title: PropTypes.string,
+  language: PropTypes.oneOf(Object.keys(languages)),
+  preventUpturnedText: PropTypes.bool,
+  onClick: PropTypes.func
 };
-
-const PI2 = 2 * Math.PI;
-
-function bearing(lat1, lng1, lat2, lng2) {
-  const dLon = lng2 - lng1;
-  const y = Math.sin(dLon) * Math.cos(lat2);
-  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-  return PI2 - ((Math.atan2(y, x) + PI2) % PI2);
-}
-
-function toRad(deg) {
-  return deg * Math.PI / 180;
-}
