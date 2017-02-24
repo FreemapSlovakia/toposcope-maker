@@ -1,0 +1,36 @@
+<p>
+  Questo  uno strumento per la creazione di <a href="https://it.wikipedia.org/wiki/Toposcopio" target="_blank">toposcopi</a>.
+  Puoi trovare la pagina del progetto su <a href="https://github.com/FreemapSlovakia/toposcope-maker" target="_blank">GitHub</a>.
+</p>
+
+<p>Tools:</p>
+<ul>
+  <li><span class="glyphicon glyphicon-eye-open"></span> <u>Posiziona Osservatore</u> - al clic sulla mappa verrà inserita la posizione dell'osservatore (toposcopio)</li>
+  <li><span class="glyphicon glyphicon-map-marker"></span> <u>Aggiungi POI</u> - il clic sulla mappa aggiungerà un nuovo punto nella locazione scelta</li>
+  <li><span class="glyphicon glyphicon-record"></span> <u>Carica POI</u> - il clic sulla mappa definisce la posizione da cui saranno scaricati i punti di interesse scaricati dal database di OpenStreetMap</li>
+  <li><span class="glyphicon glyphicon-move"></span> <u>Sposta</u> - abilita lo spostamento dei punti sulla mappa</li>
+  <li><span class="glyphicon glyphicon-remove"></span> <u>Elimina</u> - clic sul punto da rimuovere</li>
+</ul>
+
+<p>Proprietà dei punti:</p>
+<ul>
+  <li>
+    <u>Etichetta</u> - eticheta del punto;
+    <mark>{d}</mark> il testo sarà sostituito dalla distanza in km dal punto all'osservatore;
+    <mark>{lat}</mark> e <mark>{lon}</mark> con la latitudine latitudine and longitudine (solo per l'osservatore)
+  </li>
+</ul>
+
+<p>Proprietà del toposcopio:</p>
+<ul>
+  <li><u>Raggio del cerchio interno</u> - raggio del cerchio interno del toposcopio </li>
+  <li><u>Dimensione del testo</u> - dimensione del testo contenuto nel toposcopio</li>
+  <li><u>Previeni il testo sotto-sopra</u> - ...</li>
+</ul>
+
+<p>Impostazioni:</p>
+<ul>
+  <li><u>Distanza massima dei POi caricati</u> - distanza massima dei pinti di interessi caricati dalla pozione del clic in modalità "Carica POI"</li>
+  <li><u>Utilizza solo il POI trovato più vicino</u> - ...</li>
+  <li><u>Aggiungi una linea di separazione dopo avere caricato il POI dell'elevazione</u> - ...</li>
+</ul>
