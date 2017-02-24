@@ -25,7 +25,7 @@
 <ul>
   <li><u>Raggio del cerchio interno</u> - raggio del cerchio interno del toposcopio </li>
   <li><u>Dimensione del testo</u> - dimensione del testo contenuto nel toposcopio</li>
-  <li><u>revieni il testo sotto-sopra</u> - ...</li>
+  <li><u>Previeni il testo sotto-sopra</u> - ...</li>
 </ul>
 
 <p>Impostazioni:</p>
