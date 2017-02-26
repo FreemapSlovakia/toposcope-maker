@@ -5,6 +5,7 @@ module.exports = {
   output: {
     path: __dirname
   },
+  devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'cheap-module-eval-source-map',
   module: {
     rules: [
       {
@@ -28,6 +29,8 @@ module.exports = {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new webpack.optimize.UglifyJsPlugin()
+    new webpack.optimize.UglifyJsPlugin({
+      comments: false
+    })
   ] : []
 };
