@@ -127,7 +127,7 @@ export default class Main extends React.Component {
       this.setState({ fetching: true });
       loadPois(lat, lng, radius, language, addLineBreaks, onlyNearest).then(pois => {
         this.setState({ activePoiId: null,
-          pois: [ ...this.state.pois.filter(({ id1 }) => pois.find(({ id2 }) => id1 !== id2) !== -1), ...pois ] });
+          pois: [ ...this.state.pois.filter(p1 => pois.length === 0 || pois.some(p2 => p1.id !== p2.id)), ...pois ] });
       }).catch().then(() => this.setState({ fetching: false }));
     } else {
       this.setState({ activePoiId: null, });
