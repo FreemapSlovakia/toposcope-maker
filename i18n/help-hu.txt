@@ -1,0 +1,35 @@
+<p>
+  Ezzel az eszközzel <a href="https://en.wikipedia.org/wiki/Toposcope" target="_blank">toposzkópok</a> készíthetők.
+  A projekt kódja megtalálható a <a href="https://github.com/FreemapSlovakia/toposcope-maker" target="_blank">GitHubon</a>.
+</p>
+
+<p>Eszközök:</p>
+<ul>
+  <li><span class="glyphicon glyphicon-eye-open"></span> <u>Megfigyelő beállítása</u> – a térképre kattintva megadhatja a megfigyelő (toposzkóp) pozícióját</li>
+  <li><span class="glyphicon glyphicon-map-marker"></span> <u>Érdekes pontok (POI-k) hozzáadása</u> – ahol a térképre kattint, ott meg fog jelenni egy új pont</li>
+  <li><span class="glyphicon glyphicon-record"></span> <u>POI-k betöltése</u> – ahol a térképre kattint, azon pont környékén le fognak töltődni az OpenStreetMap adatbázisában található érdekes pontok</li>
+  <li><span class="glyphicon glyphicon-move"></span> <u>Mozgatás</u> – lehetővé teszi a pontok térképen történő elhúzását</li>
+  <li><span class="glyphicon glyphicon-remove"></span> <u>Törlés</u> – törli azt a pontot, amelyikre rákattint</li>
+</ul>
+
+<p>Pont tulajdonságai:</p>
+<ul>
+  <li>
+    <u>Felirat</u> – a pont felirata;
+    a <mark>{d}</mark> jelzést a szövegben felváltja a pontnak a megfigyelőtől való távolsága (km), a <mark>{lat}</mark> és <mark>{lon}</mark> jelzés pedig a szélesség és a hosszúság (csak a megfigyelőnél)
+  </li>
+</ul>
+
+<p>Toposzkóp tulajdonságai:</p>
+<ul>
+  <li><u>Belső kör sugara</u> – a toposzkóp belső körének sugara</li>
+  <li><u>Betűméret</u> – a toposzkópon található összes szöveg betűmérete</li>
+  <li><u>Szöveg megfordulásának megakadályozása</u> – …</li>
+</ul>
+
+<p>Beállítások:</p>
+<ul>
+  <li><u>Betöltött POI-k legnagyobb távolsága</u> – a betöltendő érdekes pontok legnagyobb távolsága attól a ponttól, ahol a „POI-k betöltése” módban a térképre kattint</li>
+  <li><u>Csak a legközelebbi POI használata</u> – …</li>
+  <li><u>Sortörés hozzáadása a betöltött POI magassága után</u> – …</li>
+</ul>

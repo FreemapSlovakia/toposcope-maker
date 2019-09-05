@@ -1,4 +1,4 @@
-export const languages = { en: 'English', sk: 'Slovensky', cs: 'Česky', it: 'Italiano' };
+export const languages = { en: 'English', sk: 'Slovensky', cs: 'Česky', it: 'Italiano', hu: 'Magyar' };
 
 export function getBrowserLanguage(language) {
   return language && languages[language] ? language
