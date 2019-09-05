@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Modal from 'react-bootstrap-modal';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
@@ -77,11 +78,11 @@ export default class Settings extends React.Component {
 }
 
 Settings.propTypes = {
-  show: React.PropTypes.bool,
-  onClose: React.PropTypes.func.isRequired,
-  messages: React.PropTypes.object.isRequired,
-  loadPoiMaxDistance:React.PropTypes.number.isRequired,
-  addLineBreaks: React.PropTypes.bool.isRequired,
-  onlyNearest: React.PropTypes.bool.isRequired,
-  onSave: React.PropTypes.func.isRequired
+  show: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  messages: PropTypes.object.isRequired,
+  loadPoiMaxDistance:PropTypes.number.isRequired,
+  addLineBreaks: PropTypes.bool.isRequired,
+  onlyNearest: PropTypes.bool.isRequired,
+  onSave: PropTypes.func.isRequired
 };

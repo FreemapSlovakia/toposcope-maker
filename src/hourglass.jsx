@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function Hourglass({ active, children }) {
   return (
@@ -7,6 +8,6 @@ export default function Hourglass({ active, children }) {
 }
 
 Hourglass.propTypes = {
-  active: React.PropTypes.bool,
-  children: React.PropTypes.node
+  active: PropTypes.bool,
+  children: PropTypes.node
 };

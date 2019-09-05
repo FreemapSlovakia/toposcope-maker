@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from 'react-bootstrap-modal';
+import PropTypes from 'prop-types';
 
 export default function Help({ show, onClose, messages, language }) {
   const t = key => messages[key] || key;
@@ -20,8 +21,8 @@ export default function Help({ show, onClose, messages, language }) {
 }
 
 Help.propTypes = {
-  show: React.PropTypes.bool,
-  onClose: React.PropTypes.func.isRequired,
-  language: React.PropTypes.string.isRequired,
-  messages: React.PropTypes.object.isRequired,
+  show: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  language: PropTypes.string.isRequired,
+  messages: PropTypes.object.isRequired,
 };
