@@ -163,7 +163,7 @@ export default class Main extends React.Component {
   }
 
   handleSaveImage() {
-    const xml = new XMLSerializer().serializeToString(this.refs.toposcope);
+    const xml = new XMLSerializer().serializeToString(this.refs.toposcope.firstChild);
     FileSaver.saveAs(new Blob([ xml ], { type: 'image/svg+xml' }), 'toposcope.svg');
   }
 
